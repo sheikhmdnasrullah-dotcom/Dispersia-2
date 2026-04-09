@@ -27,7 +27,7 @@ export default function SignupPage() {
   async function handleGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: 'https://dispersia.tanim.tech/setup' }
+      options: { redirectTo: 'https://dyspersia.tanim.tech/setup' }
     })
   }
 
