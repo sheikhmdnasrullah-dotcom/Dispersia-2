@@ -124,7 +124,7 @@ export default function SetupPage() {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#2a2a2a', fontSize: 11 }}>{STEP_LABELS[step - 1]}</span>
-            <span style={{ color: '#2a2a2a', fontSize: 11' }}>{step} / 5</span>
+            <span style={{ color: '#2a2a2a', fontSize: 11 }}>{step} / 5</span>
           </div>
         </div>
 
