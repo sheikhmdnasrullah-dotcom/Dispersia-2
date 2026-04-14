@@ -129,34 +129,51 @@
 .grid-bg {
   background-color: #080808;
   background-image:
-    repeating-linear-gradient(
+    repeating-linear-gradient(rgba(0, 255, 128, 0.03) 1px,
+      transparent 1px),
+    repeating-linear-gradient(90deg,
       rgba(0, 255, 128, 0.03) 1px,
-      transparent 1px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(0, 255, 128, 0.03) 1px,
-      transparent 1px
-    );
+      transparent 1px);
   background-size: 40px 40px;
 }
 
 /* ── Keyframe Animations ── */
 @keyframes pulse-dot {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.3; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes blink-cursor {
-  0%   { opacity: 1; }
-  50%  { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-in-right {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes fade-up {
@@ -164,6 +181,7 @@
     transform: translateY(16px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -171,7 +189,9 @@
 }
 
 @keyframes progress-fill {
-  from { width: 0%; }
+  from {
+    width: 0%;
+  }
 }
 
 /* ── Global Resets for Dyspersia ── */
@@ -215,9 +235,11 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
