@@ -81,6 +81,14 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Dyspersia Brand Variables */
+  --bg: #080808;
+  --green: #00FF80;
+  --green-dim: rgba(0, 255, 128, 0.4);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-green: rgba(0, 255, 128, 0.2);
+  --text-muted: rgba(255, 255, 255, 0.4);
 }
 
 .dark {
@@ -115,6 +123,92 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ── Dyspersia Grid Background ── */
+.grid-bg {
+  background-color: #080808;
+  background-image:
+    repeating-linear-gradient(
+      rgba(0, 255, 128, 0.03) 1px,
+      transparent 1px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 255, 128, 0.03) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+}
+
+/* ── Keyframe Animations ── */
+@keyframes pulse-dot {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes blink-cursor {
+  0%   { opacity: 1; }
+  50%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes fade-up {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progress-fill {
+  from { width: 0%; }
+}
+
+/* ── Global Resets for Dyspersia ── */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #080808;
+  color: #ffffff;
+  font-family: 'IBM Plex Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 128, 0.25);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 128, 0.4);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 255, 128, 0.25) #0a0a0a;
 }
 
 @layer base {
