@@ -1,128 +1,84 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import Link from 'next/link'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function SignupPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function handleSignup() {
-    setLoading(true)
-    setError('')
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (error) { setError(error.message); setLoading(false) }
-    else router.push('/setup')
-  }
+  function handleSignup() { setLoading(true); setTimeout(() => router.push('/setup'), 800) }
 
-  async function handleGoogle() {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: 'https://dyspersia.tanim.tech/setup' }
-    })
+  const inputStyle: React.CSSProperties = {
+    display: 'block', width: '100%', padding: '12px 16px',
+    background: 'var(--d-surface-solid)', border: '1px solid var(--d-border)',
+    color: 'var(--d-text)', fontFamily: "'Inter', sans-serif", fontSize: '14px',
+    outline: 'none', borderRadius: '10px', transition: 'border-color 0.2s ease, box-shadow 0.2s ease', marginBottom: '14px',
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#080808',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: "'IBM Plex Mono', monospace",
-      backgroundImage: `
-        linear-gradient(rgba(0,255,128,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,128,0.03) 1px, transparent 1px)
-      `,
-      backgroundSize: '40px 40px',
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        .input-field {
-          display: block; width: 100%; padding: 14px 16px;
-          background: #0f0f0f; border: 1px solid #1e1e1e;
-          color: #e8e8e8; font-family: 'IBM Plex Mono', monospace;
-          font-size: 13px; outline: none; transition: border-color 0.2s;
-          margin-bottom: 12px;
-        }
-        .input-field:focus { border-color: #00ff80; }
-        .input-field::placeholder { color: #333; }
-        .btn-primary {
-          width: 100%; padding: 14px; background: #00ff80;
-          color: #080808; border: none; cursor: pointer;
-          font-family: 'IBM Plex Mono', monospace; font-size: 13px;
-          font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
-          transition: opacity 0.2s; margin-bottom: 10px;
-        }
-        .btn-primary:hover { opacity: 0.85; }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-        .btn-ghost {
-          width: 100%; padding: 14px; background: transparent;
-          color: #555; border: 1px solid #1e1e1e; cursor: pointer;
-          font-family: 'IBM Plex Mono', monospace; font-size: 12px;
-          letter-spacing: 0.05em; transition: border-color 0.2s, color 0.2s;
-        }
-        .btn-ghost:hover { border-color: #333; color: #888; }
-      `}</style>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', fontFamily: "'Inter', sans-serif", position: 'relative', overflow: 'hidden' }}>
+      <div className="blob blob-1" style={{ top: '5%', right: '-5%' }} />
+      <div className="blob blob-3" style={{ bottom: '5%', left: '-5%' }} />
 
-      <div style={{ width: '100%', maxWidth: 420, padding: '0 24px' }}>
+      <div style={{ position: 'fixed', top: '16px', right: '80px', zIndex: 100 }}><ThemeToggle /></div>
+      <button className="dev-bypass-btn" onClick={() => router.push('/setup')}>Skip to setup →</button>
 
-        <div style={{ marginBottom: 48 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ width: 8, height: 8, background: '#00ff80', borderRadius: '50%' }} />
-            <span style={{ color: '#00ff80', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-              Dispersia
-            </span>
+      <div style={{ width: '100%', maxWidth: '380px', position: 'relative', zIndex: 1 }}>
+        <div style={{ marginBottom: '40px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+            <div className="status-dot" />
+            <span style={{ fontSize: '16px', fontWeight: 700 }}><span className="gradient-text">dyspersia</span></span>
           </div>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 36, fontWeight: 800, color: '#f0f0f0', lineHeight: 1.1 }}>
-            Start building<br />your brain.
-          </h1>
-          <p style={{ color: '#333', fontSize: 12, marginTop: 10, letterSpacing: '0.05em' }}>
-            30 days to a live, paying product.
-          </p>
+          <h1 style={{ fontSize: '28px', fontWeight: 800, color: 'var(--d-text)', marginBottom: '6px', letterSpacing: '-0.03em' }}>Create your account</h1>
+          <p style={{ fontSize: '14px', color: 'var(--d-text-muted)' }}>Start building your Creator Brain.</p>
         </div>
 
-        <input className="input-field" type="email" placeholder="email@domain.com"
-          value={email} onChange={e => setEmail(e.target.value)} />
-        <input className="input-field" type="password" placeholder="choose a password"
-          value={password} onChange={e => setPassword(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleSignup()} />
+        <div className="glass-card" style={{ padding: '28px' }}>
+          <label style={{ display: 'block', fontSize: '13px', color: 'var(--d-text-secondary)', marginBottom: '5px', fontWeight: 600 }}>Email</label>
+          <input style={inputStyle} type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)}
+            onFocus={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--d-accent)'; (e.target as HTMLInputElement).style.boxShadow = '0 0 0 3px var(--d-accent-light)' }}
+            onBlur={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--d-border)'; (e.target as HTMLInputElement).style.boxShadow = 'none' }} />
 
-        {error && (
-          <p style={{ color: '#ff4444', fontSize: 12, marginBottom: 12, padding: '10px 12px', background: 'rgba(255,68,68,0.05)', border: '1px solid rgba(255,68,68,0.1)' }}>
-            {error}
-          </p>
-        )}
+          <label style={{ display: 'block', fontSize: '13px', color: 'var(--d-text-secondary)', marginBottom: '5px', fontWeight: 600 }}>Password</label>
+          <input style={inputStyle} type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)}
+            onFocus={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--d-accent)'; (e.target as HTMLInputElement).style.boxShadow = '0 0 0 3px var(--d-accent-light)' }}
+            onBlur={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--d-border)'; (e.target as HTMLInputElement).style.boxShadow = 'none' }} />
 
-        <button className="btn-primary" onClick={handleSignup} disabled={loading}>
-          {loading ? 'Creating account...' : 'Create account'}
-        </button>
+          <label style={{ display: 'block', fontSize: '13px', color: 'var(--d-text-secondary)', marginBottom: '5px', fontWeight: 600 }}>Confirm password</label>
+          <input style={inputStyle} type="password" placeholder="••••••••" value={confirm} onChange={e => setConfirm(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSignup()}
+            onFocus={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--d-accent)'; (e.target as HTMLInputElement).style.boxShadow = '0 0 0 3px var(--d-accent-light)' }}
+            onBlur={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--d-border)'; (e.target as HTMLInputElement).style.boxShadow = 'none' }} />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '16px 0' }}>
-          <div style={{ flex: 1, height: 1, background: '#1a1a1a' }} />
-          <span style={{ color: '#2a2a2a', fontSize: 11 }}>or</span>
-          <div style={{ flex: 1, height: 1, background: '#1a1a1a' }} />
+          <div onClick={handleSignup} style={{
+            width: '100%', padding: '12px', background: 'var(--d-accent)', color: '#fff',
+            fontSize: '14px', fontWeight: 600, textAlign: 'center', cursor: 'pointer',
+            borderRadius: '10px', marginBottom: '12px', opacity: loading ? 0.6 : 1,
+            transition: 'all 0.2s ease', boxShadow: '0 2px 16px rgba(16,185,129,0.25)',
+          }}>{loading ? 'Creating account...' : 'Create account'}</div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '16px 0' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--d-border)' }} />
+            <span style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>or</span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--d-border)' }} />
+          </div>
+
+          <div onClick={() => { setLoading(true); setTimeout(() => router.push('/setup'), 800) }} style={{
+            width: '100%', padding: '12px', background: 'var(--d-glass-bg)', backdropFilter: 'blur(8px)',
+            border: '1px solid var(--d-border)', color: 'var(--d-text-secondary)', fontSize: '14px',
+            textAlign: 'center', cursor: 'pointer', borderRadius: '10px', transition: 'all 0.2s ease', fontWeight: 500,
+          }}>Continue with Google</div>
         </div>
 
-        <button className="btn-ghost" onClick={handleGoogle}>
-          Continue with Google
-        </button>
-
-        <p style={{ textAlign: 'center', marginTop: 28, color: '#2a2a2a', fontSize: 12 }}>
-          Already have an account?{' '}
-          <a href="/login" style={{ color: '#00ff80', textDecoration: 'none' }}>Log in</a>
+        <p style={{ textAlign: 'center', marginTop: '28px', fontSize: '13px', color: 'var(--d-text-muted)' }}>
+          Already have an account? <Link href="/login" style={{ color: 'var(--d-accent)', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
         </p>
-
       </div>
     </div>
   )

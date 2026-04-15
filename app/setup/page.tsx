@@ -1,794 +1,234 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import ThemeToggle from '@/components/ThemeToggle'
 
-const STEP_LABELS = ['VOICE', 'BRAND', 'CONTENT', 'LAUNCH']
-
-const NICHES = [
-  'Business',
-  'Tech',
-  'Finance',
-  'Health',
-  'True Crime',
-  'Comedy',
-  'Education',
-  'Other',
-]
-
-const CAPTION_STYLES = ['MINIMAL', 'BOLD', 'BRANDED', 'FUTURISTIC']
-
-const TOOLS_LIST = [
-  'Transcription',
-  'Podcast to Reels',
-  'Editorial Direction',
-  'Content Pack',
-  'Distribution',
-  'Dispersia Agent',
-]
-
-const REEL_STYLES = ['VIRAL', 'EDUCATIONAL', 'MOTIVATIONAL', 'FINANCE']
-
-const PLATFORMS = ['YouTube', 'TikTok', 'LinkedIn', 'Instagram', 'Twitter/X']
-
-interface FormData {
-  showName: string
-  niche: string
-  audience: string
-  voiceSample: string
-  logoFile: File | null
-  brandColor: string
-  captionStyle: string
-  tools: string[]
-  reelStyle: string
-  platforms: string[]
-}
+const STEPS = ['Voice', 'Brand', 'Content', 'Launch']
+const NICHES = ['Business', 'Tech', 'Finance', 'Health', 'Comedy', 'True Crime', 'Education', 'Other']
+const CAPTION_STYLES = ['Minimal', 'Bold', 'Branded', 'Futuristic']
+const TONES = ['Casual', 'Professional', 'Authoritative']
+const TOOLS_LIST = ['Transcription', 'Podcast to Reels', 'Editorial Direction', 'Content Pack', 'Distribution', 'Dyspersia Agent']
+const REEL_STYLES = ['Viral', 'Educational', 'Motivational', 'Finance']
+const PLATFORMS_LIST = ['YouTube', 'TikTok', 'LinkedIn', 'Instagram', 'Twitter/X']
 
 export default function SetupPage() {
   const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [currentStep, setCurrentStep] = useState(0)
-  const [formData, setFormData] = useState<FormData>({
-    showName: '',
-    niche: '',
-    audience: '',
-    voiceSample: '',
-    logoFile: null,
-    brandColor: '#00FF80',
-    captionStyle: '',
-    tools: [],
-    reelStyle: '',
-    platforms: [],
+  const [step, setStep] = useState(0)
+  const [showName, setShowName] = useState('')
+  const [niche, setNiche] = useState('')
+  const [audience, setAudience] = useState('')
+  const [voiceSample, setVoiceSample] = useState('')
+  const [logoUploaded, setLogoUploaded] = useState(false)
+  const [logoProgress, setLogoProgress] = useState(0)
+  const [uploading, setUploading] = useState(false)
+  const [brandColor, setBrandColor] = useState('#10b981')
+  const [captionStyle, setCaptionStyle] = useState('')
+  const [tone, setTone] = useState('')
+  const [tools, setTools] = useState<string[]>([...TOOLS_LIST])
+  const [reelStyle, setReelStyle] = useState('')
+  const [platforms, setPlatforms] = useState<string[]>([])
+  const [connected, setConnected] = useState<Record<string, boolean>>({})
+  const [connecting, setConnecting] = useState<Record<string, boolean>>({})
+
+  const f = "'Inter', sans-serif"
+
+  function handleFakeUpload() {
+    setUploading(true); setLogoProgress(0)
+    let p = 0
+    const iv = setInterval(() => { p += 5; setLogoProgress(p); if (p >= 100) { clearInterval(iv); setUploading(false); setLogoUploaded(true) } }, 100)
+  }
+
+  function handleConnect(platform: string) {
+    setConnecting(prev => ({ ...prev, [platform]: true }))
+    setTimeout(() => { setConnecting(prev => ({ ...prev, [platform]: false })); setConnected(prev => ({ ...prev, [platform]: true })) }, 1500)
+  }
+
+  function toggleArr(arr: string[], item: string, setter: (v: string[]) => void) {
+    setter(arr.includes(item) ? arr.filter(x => x !== item) : [...arr, item])
+  }
+
+  const inputStyle: React.CSSProperties = {
+    display: 'block', width: '100%', padding: '12px 16px', background: 'var(--d-surface-solid)',
+    border: '1px solid var(--d-border)', color: 'var(--d-text)', fontFamily: f, fontSize: '14px',
+    outline: 'none', borderRadius: '10px', transition: 'border-color 0.2s ease, box-shadow 0.2s ease', marginBottom: '16px', resize: 'none' as const,
+  }
+
+  const lblStyle: React.CSSProperties = { display: 'block', fontSize: '13px', color: 'var(--d-text-secondary)', marginBottom: '5px', fontWeight: 600, fontFamily: f }
+
+  const pillBtn = (selected: boolean): React.CSSProperties => ({
+    padding: '10px 18px', fontFamily: f, fontSize: '13px', cursor: 'pointer', borderRadius: '10px', transition: 'all 0.2s ease', fontWeight: 500,
+    border: selected ? '1.5px solid var(--d-accent)' : '1px solid var(--d-border)',
+    background: selected ? 'var(--d-accent-light)' : 'var(--d-glass-bg)',
+    backdropFilter: 'blur(8px)',
+    color: selected ? 'var(--d-accent)' : 'var(--d-text-muted)',
+    boxShadow: selected ? '0 0 0 3px var(--d-accent-light)' : 'none',
   })
 
-  function updateField<K extends keyof FormData>(key: K, value: FormData[K]) {
-    setFormData((prev) => ({ ...prev, [key]: value }))
+  const focusInput = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    (e.target as HTMLElement).style.borderColor = 'var(--d-accent)';
+    (e.target as HTMLElement).style.boxShadow = '0 0 0 3px var(--d-accent-light)'
   }
-
-  function toggleArrayItem(key: 'tools' | 'platforms', item: string) {
-    setFormData((prev) => {
-      const arr = prev[key] as string[]
-      return {
-        ...prev,
-        [key]: arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item],
-      }
-    })
-  }
-
-  function handleNext() {
-    if (currentStep < 3) setCurrentStep(currentStep + 1)
-  }
-
-  function handleBack() {
-    if (currentStep > 0) setCurrentStep(currentStep - 1)
-  }
-
-  function handleLaunch() {
-    router.push('/dashboard')
-  }
-
-  function handleLogoDrop(e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault()
-    const file = e.dataTransfer.files?.[0]
-    if (file) updateField('logoFile', file)
-  }
-
-  function handleLogoSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] || null
-    if (file) updateField('logoFile', file)
-  }
-
-  // Common input styles
-  const inputStyle: React.CSSProperties = {
-    display: 'block',
-    width: '100%',
-    padding: '12px 16px',
-    background: '#0f0f0f',
-    border: '1px solid rgba(255,255,255,0.1)',
-    color: '#ffffff',
-    fontFamily: "'IBM Plex Mono', monospace",
-    fontSize: '13px',
-    outline: 'none',
-    borderRadius: '2px',
-    transition: 'border-color 0.2s',
-    marginBottom: '16px',
-    resize: 'none' as const,
-  }
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    fontFamily: "'IBM Plex Mono', monospace",
-    fontSize: '10px',
-    color: '#00FF80',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-    marginBottom: '8px',
+  const blurInput = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    (e.target as HTMLElement).style.borderColor = 'var(--d-border)';
+    (e.target as HTMLElement).style.boxShadow = 'none'
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px 24px',
-      }}
-    >
-      <div style={{ width: '100%', maxWidth: '640px' }}>
-        {/* ── Step Progress Bar ── */}
-        <div style={{ marginBottom: '48px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0px',
-              marginBottom: '12px',
-            }}
-          >
-            {STEP_LABELS.map((label, i) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center' }}>
-                {/* Dot */}
-                <div
-                  style={{
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    transition: 'all 0.3s ease',
-                    ...(i < currentStep
-                      ? {
-                          background: '#00FF80',
-                          color: '#080808',
-                          border: '2px solid #00FF80',
-                        }
-                      : i === currentStep
-                      ? {
-                          background: 'transparent',
-                          border: '2px solid #00FF80',
-                          boxShadow: '0 0 12px rgba(0,255,128,0.25)',
-                        }
-                      : {
-                          background: 'transparent',
-                          border: '2px solid rgba(255,255,255,0.1)',
-                        }),
-                  }}
-                >
-                  {i < currentStep ? (
-                    <span style={{ fontSize: '14px', lineHeight: 1 }}>✓</span>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', fontFamily: f, position: 'relative', overflow: 'hidden' }}>
+      <div className="blob blob-1" style={{ top: '5%', left: '5%' }} />
+      <div className="blob blob-2" style={{ bottom: '10%', right: '5%' }} />
+
+      <div style={{ position: 'fixed', top: '16px', right: '130px', zIndex: 100 }}><ThemeToggle /></div>
+      <button className="dev-bypass-btn" onClick={() => setStep(3)}>Skip all →</button>
+
+      <div style={{ width: '100%', maxWidth: '580px', position: 'relative', zIndex: 1 }}>
+        {/* Progress */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '48px' }}>
+          {STEPS.map((s, i) => (
+            <div key={s} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '100%', height: '4px', borderRadius: '2px', overflow: 'hidden',
+                background: i <= step ? 'transparent' : 'var(--d-border)',
+              }}>
+                {i <= step && <div style={{ width: '100%', height: '100%', borderRadius: '2px', background: 'var(--d-gradient)' }} />}
+              </div>
+              <span style={{ fontSize: '11px', fontWeight: i === step ? 600 : 400, color: i <= step ? 'var(--d-accent)' : 'var(--d-text-muted)' }}>{s}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="glass-card" style={{ padding: '36px' }}>
+          <div key={step} style={{ animation: 'fade-in 0.25s ease' }}>
+            {/* STEP 1 */}
+            {step === 0 && (
+              <div>
+                <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--d-text)', marginBottom: '6px', letterSpacing: '-0.02em' }}>Tell us about your show</h1>
+                <p style={{ fontSize: '14px', color: 'var(--d-text-muted)', marginBottom: '28px' }}>This helps your Creator Brain understand your voice.</p>
+                <label style={lblStyle}>Show name</label>
+                <input style={inputStyle} placeholder="e.g. The Growth Mindset" value={showName} onChange={e => setShowName(e.target.value)} onFocus={focusInput} onBlur={blurInput} />
+                <label style={lblStyle}>Niche</label>
+                <select style={{ ...inputStyle, appearance: 'none' }} value={niche} onChange={e => setNiche(e.target.value)} onFocus={focusInput} onBlur={blurInput}>
+                  <option value="">Select...</option>
+                  {NICHES.map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
+                <label style={lblStyle}>Target audience</label>
+                <textarea style={{ ...inputStyle, minHeight: '70px' }} placeholder="Who listens and what do they care about?" value={audience} onChange={e => setAudience(e.target.value)} rows={3} onFocus={focusInput} onBlur={blurInput} />
+                <label style={lblStyle}>Voice sample</label>
+                <textarea style={{ ...inputStyle, minHeight: '100px' }} placeholder="Paste writing that represents your voice..." value={voiceSample} onChange={e => setVoiceSample(e.target.value)} rows={4} onFocus={focusInput} onBlur={blurInput} />
+                <p style={{ fontSize: '12px', color: 'var(--d-text-muted)', marginTop: '-8px' }}>This trains your Creator Brain voice fingerprint.</p>
+              </div>
+            )}
+
+            {/* STEP 2 */}
+            {step === 1 && (
+              <div>
+                <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--d-text)', marginBottom: '6px', letterSpacing: '-0.02em' }}>Define your brand</h1>
+                <p style={{ fontSize: '14px', color: 'var(--d-text-muted)', marginBottom: '28px' }}>Visual identity for captions, thumbnails, and templates.</p>
+                <label style={lblStyle}>Logo</label>
+                <div onClick={() => !logoUploaded && !uploading && handleFakeUpload()}
+                  style={{ border: '2px dashed var(--d-border)', padding: '40px 20px', textAlign: 'center', cursor: 'pointer', marginBottom: '24px', borderRadius: '12px', transition: 'all 0.2s ease', background: logoUploaded ? 'var(--d-accent-light)' : 'transparent' }}>
+                  {uploading ? (
+                    <div>
+                      <div style={{ width: '180px', height: '4px', background: 'var(--d-border)', borderRadius: '2px', margin: '0 auto 8px', overflow: 'hidden' }}>
+                        <div style={{ width: `${logoProgress}%`, height: '100%', borderRadius: '2px', background: 'var(--d-gradient)', transition: 'width 0.1s linear' }} />
+                      </div>
+                      <span style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>Uploading... {logoProgress}%</span>
+                    </div>
+                  ) : logoUploaded ? (
+                    <span style={{ fontSize: '13px', color: 'var(--d-accent)', fontWeight: 600 }}>✓ logo.png uploaded</span>
                   ) : (
-                    <div
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: i === currentStep ? '#00FF80' : 'rgba(255,255,255,0.15)',
-                      }}
-                    />
+                    <span style={{ fontSize: '13px', color: 'var(--d-text-muted)' }}>Drop logo here or click to upload</span>
                   )}
                 </div>
-                {/* Connector line */}
-                {i < STEP_LABELS.length - 1 && (
-                  <div
-                    style={{
-                      width: '60px',
-                      height: '2px',
-                      background: i < currentStep ? '#00FF80' : 'rgba(255,255,255,0.08)',
-                      transition: 'background 0.3s ease',
-                    }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          {/* Labels under dots */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '0px' }}>
-            {STEP_LABELS.map((label, i) => (
-              <div
-                key={`label-${label}`}
-                style={{
-                  width: i < STEP_LABELS.length - 1 ? '88px' : '28px',
-                  textAlign: 'center',
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '9px',
-                  letterSpacing: '0.12em',
-                  color: i <= currentStep ? '#00FF80' : 'rgba(255,255,255,0.2)',
-                  transition: 'color 0.3s ease',
-                }}
-              >
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Step Content ── */}
-        <div style={{ animation: 'fade-up 0.3s ease' }} key={currentStep}>
-          {/* STEP 1: Creator Voice */}
-          {currentStep === 0 && (
-            <div>
-              <h1
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 800,
-                  fontSize: '32px',
-                  color: '#ffffff',
-                  marginBottom: '32px',
-                  lineHeight: 1.2,
-                }}
-              >
-                Tell us about your show.
-              </h1>
-
-              <label style={labelStyle}>SHOW NAME</label>
-              <input
-                style={inputStyle}
-                placeholder="e.g. The Growth Mindset"
-                value={formData.showName}
-                onChange={(e) => updateField('showName', e.target.value)}
-                onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = '#00FF80' }}
-                onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
-              />
-
-              <label style={labelStyle}>NICHE</label>
-              <select
-                style={{
-                  ...inputStyle,
-                  appearance: 'none',
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300FF80' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 16px center',
-                  paddingRight: '40px',
-                }}
-                value={formData.niche}
-                onChange={(e) => updateField('niche', e.target.value)}
-                onFocus={(e) => { (e.target as HTMLSelectElement).style.borderColor = '#00FF80' }}
-                onBlur={(e) => { (e.target as HTMLSelectElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
-              >
-                <option value="" style={{ background: '#0f0f0f' }}>
-                  Select your niche...
-                </option>
-                {NICHES.map((n) => (
-                  <option key={n} value={n} style={{ background: '#0f0f0f' }}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-
-              <label style={labelStyle}>TARGET AUDIENCE</label>
-              <textarea
-                style={{ ...inputStyle, minHeight: '80px' }}
-                placeholder="Describe your target audience — who listens, what they care about..."
-                value={formData.audience}
-                onChange={(e) => updateField('audience', e.target.value)}
-                onFocus={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = '#00FF80' }}
-                onBlur={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
-                rows={3}
-              />
-
-              <label style={labelStyle}>VOICE SAMPLE</label>
-              <textarea
-                style={{ ...inputStyle, minHeight: '100px' }}
-                placeholder="Paste a newsletter, blog post, or writing you love — we'll learn your voice from it"
-                value={formData.voiceSample}
-                onChange={(e) => updateField('voiceSample', e.target.value)}
-                onFocus={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = '#00FF80' }}
-                onBlur={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
-                rows={4}
-              />
-            </div>
-          )}
-
-          {/* STEP 2: Brand Identity */}
-          {currentStep === 1 && (
-            <div>
-              <h1
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 800,
-                  fontSize: '32px',
-                  color: '#ffffff',
-                  marginBottom: '32px',
-                  lineHeight: 1.2,
-                }}
-              >
-                Your brand identity.
-              </h1>
-
-              {/* Logo Upload */}
-              <label style={labelStyle}>LOGO</label>
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                onDrop={handleLogoDrop}
-                onDragOver={(e) => e.preventDefault()}
-                style={{
-                  border: '1.5px dashed rgba(0,255,128,0.4)',
-                  padding: '48px 24px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  marginBottom: '24px',
-                  transition: 'all 0.2s',
-                  background: formData.logoFile
-                    ? 'rgba(0,255,128,0.04)'
-                    : 'transparent',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = '#00FF80'
-                  ;(e.currentTarget as HTMLDivElement).style.background = 'rgba(0,255,128,0.04)'
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(0,255,128,0.4)'
-                  if (!formData.logoFile) {
-                    ;(e.currentTarget as HTMLDivElement).style.background = 'transparent'
-                  }
-                }}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoSelect}
-                  style={{ display: 'none' }}
-                />
-                <div
-                  style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '12px',
-                    color: formData.logoFile
-                      ? '#00FF80'
-                      : 'rgba(255,255,255,0.3)',
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {formData.logoFile ? formData.logoFile.name : 'DROP LOGO HERE'}
+                <label style={lblStyle}>Brand color</label>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px' }}>
+                  <input style={{ ...inputStyle, marginBottom: 0, flex: 1 }} value={brandColor} onChange={e => setBrandColor(e.target.value)} onFocus={focusInput} onBlur={blurInput} />
+                  <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: brandColor, border: '2px solid var(--d-border)', flexShrink: 0 }} />
                 </div>
-                <div
-                  style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '10px',
-                    color: 'rgba(255,255,255,0.15)',
-                    marginTop: '8px',
-                  }}
-                >
-                  or click to upload
+                <label style={lblStyle}>Caption style</label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px' }}>
+                  {CAPTION_STYLES.map(s => <button key={s} onClick={() => setCaptionStyle(s)} style={pillBtn(captionStyle === s)}>{s}</button>)}
+                </div>
+                <label style={lblStyle}>Tone</label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {TONES.map(t => <button key={t} onClick={() => setTone(t)} style={pillBtn(tone === t)}>{t}</button>)}
                 </div>
               </div>
-
-              {/* Brand Color */}
-              <label style={labelStyle}>BRAND COLOR</label>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '12px',
-                  alignItems: 'center',
-                  marginBottom: '28px',
-                }}
-              >
-                <input
-                  style={{
-                    ...inputStyle,
-                    marginBottom: 0,
-                    flex: 1,
-                    textTransform: 'uppercase',
-                  }}
-                  value={formData.brandColor}
-                  onChange={(e) => updateField('brandColor', e.target.value)}
-                  placeholder="#00FF80"
-                  onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = '#00FF80' }}
-                  onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
-                />
-                <div
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '2px',
-                    background: formData.brandColor || '#00FF80',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    flexShrink: 0,
-                  }}
-                />
-              </div>
-
-              {/* Caption Style */}
-              <label style={labelStyle}>CAPTION STYLE</label>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {CAPTION_STYLES.map((style) => (
-                  <button
-                    key={style}
-                    onClick={() => updateField('captionStyle', style)}
-                    style={{
-                      padding: '10px 20px',
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '11px',
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      cursor: 'pointer',
-                      borderRadius: '2px',
-                      transition: 'all 0.2s',
-                      border:
-                        formData.captionStyle === style
-                          ? '1px solid #00FF80'
-                          : '1px solid rgba(255,255,255,0.1)',
-                      background:
-                        formData.captionStyle === style
-                          ? 'rgba(0,255,128,0.1)'
-                          : 'transparent',
-                      color:
-                        formData.captionStyle === style
-                          ? '#00FF80'
-                          : 'rgba(255,255,255,0.4)',
-                    }}
-                  >
-                    {style}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Content Preferences */}
-          {currentStep === 2 && (
-            <div>
-              <h1
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 800,
-                  fontSize: '32px',
-                  color: '#ffffff',
-                  marginBottom: '32px',
-                  lineHeight: 1.2,
-                }}
-              >
-                Content preferences.
-              </h1>
-
-              {/* Tools checkboxes */}
-              <label style={labelStyle}>WHICH TOOLS DO YOU NEED?</label>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '8px',
-                  marginBottom: '28px',
-                }}
-              >
-                {TOOLS_LIST.map((tool) => {
-                  const checked = formData.tools.includes(tool)
-                  return (
-                    <button
-                      key={tool}
-                      onClick={() => toggleArrayItem('tools', tool)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        padding: '12px 14px',
-                        background: checked ? 'rgba(0,255,128,0.04)' : 'transparent',
-                        border: checked
-                          ? '1px solid rgba(0,255,128,0.2)'
-                          : '1px solid rgba(255,255,255,0.08)',
-                        cursor: 'pointer',
-                        borderRadius: '2px',
-                        transition: 'all 0.2s',
-                        textAlign: 'left',
-                      }}
-                    >
-                      {/* Custom checkbox */}
-                      <div
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                          borderRadius: '2px',
-                          border: checked
-                            ? '2px solid #00FF80'
-                            : '2px solid rgba(255,255,255,0.15)',
-                          background: checked ? '#00FF80' : 'transparent',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          transition: 'all 0.2s',
-                        }}
-                      >
-                        {checked && (
-                          <span
-                            style={{
-                              color: '#080808',
-                              fontSize: '10px',
-                              fontWeight: 700,
-                              lineHeight: 1,
-                            }}
-                          >
-                            ✓
-                          </span>
-                        )}
-                      </div>
-                      <span
-                        style={{
-                          fontFamily: "'IBM Plex Mono', monospace",
-                          fontSize: '12px',
-                          color: checked ? '#ffffff' : 'rgba(255,255,255,0.5)',
-                        }}
-                      >
-                        {tool}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Reel Style */}
-              <label style={labelStyle}>DEFAULT REEL STYLE</label>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '8px',
-                  flexWrap: 'wrap',
-                  marginBottom: '28px',
-                }}
-              >
-                {REEL_STYLES.map((style) => (
-                  <button
-                    key={style}
-                    onClick={() => updateField('reelStyle', style)}
-                    style={{
-                      padding: '10px 20px',
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '11px',
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      cursor: 'pointer',
-                      borderRadius: '2px',
-                      transition: 'all 0.2s',
-                      border:
-                        formData.reelStyle === style
-                          ? '1px solid #00FF80'
-                          : '1px solid rgba(255,255,255,0.1)',
-                      background:
-                        formData.reelStyle === style
-                          ? 'rgba(0,255,128,0.1)'
-                          : 'transparent',
-                      color:
-                        formData.reelStyle === style
-                          ? '#00FF80'
-                          : 'rgba(255,255,255,0.4)',
-                    }}
-                  >
-                    {style}
-                  </button>
-                ))}
-              </div>
-
-              {/* Target Platforms */}
-              <label style={labelStyle}>TARGET PLATFORMS</label>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {PLATFORMS.map((p) => {
-                  const selected = formData.platforms.includes(p)
-                  return (
-                    <button
-                      key={p}
-                      onClick={() => toggleArrayItem('platforms', p)}
-                      style={{
-                        padding: '10px 18px',
-                        fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '11px',
-                        letterSpacing: '0.06em',
-                        cursor: 'pointer',
-                        borderRadius: '2px',
-                        transition: 'all 0.2s',
-                        border: selected
-                          ? '1px solid #00FF80'
-                          : '1px solid rgba(255,255,255,0.1)',
-                        background: selected
-                          ? 'rgba(0,255,128,0.1)'
-                          : 'transparent',
-                        color: selected ? '#00FF80' : 'rgba(255,255,255,0.4)',
-                      }}
-                    >
-                      {p}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: Connect & Launch */}
-          {currentStep === 3 && (
-            <div>
-              <h1
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 800,
-                  fontSize: '32px',
-                  color: '#ffffff',
-                  marginBottom: '12px',
-                  lineHeight: 1.2,
-                }}
-              >
-                Connect & launch.
-              </h1>
-              <p
-                style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '12px',
-                  color: 'rgba(255,255,255,0.35)',
-                  marginBottom: '32px',
-                  letterSpacing: '0.03em',
-                }}
-              >
-                Link your platforms for automated distribution.
-              </p>
-
-              {/* Connection buttons */}
-              {['CONNECT YOUTUBE', 'CONNECT SPOTIFY', 'CONNECT LINKEDIN'].map(
-                (btn) => (
-                  <button
-                    key={btn}
-                    style={{
-                      display: 'block',
-                      width: '100%',
-                      padding: '16px 20px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      color: 'rgba(255,255,255,0.6)',
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '12px',
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      cursor: 'pointer',
-                      borderRadius: '2px',
-                      marginBottom: '10px',
-                      transition: 'all 0.2s',
-                      textAlign: 'left',
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget as HTMLButtonElement
-                      el.style.borderColor = '#00FF80'
-                      el.style.color = '#00FF80'
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLButtonElement
-                      el.style.borderColor = 'rgba(255,255,255,0.15)'
-                      el.style.color = 'rgba(255,255,255,0.6)'
-                    }}
-                  >
-                    {btn}
-                  </button>
-                )
-              )}
-
-              {/* Launch button */}
-              <button
-                onClick={handleLaunch}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '18px 20px',
-                  background: '#00FF80',
-                  color: '#080808',
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 700,
-                  fontSize: '18px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: '2px',
-                  marginTop: '24px',
-                  letterSpacing: '0.04em',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.boxShadow = '0 0 24px rgba(0,255,128,0.25)'
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.boxShadow = 'none'
-                }}
-              >
-                LAUNCH YOUR BRAIN →
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* ── Navigation Buttons ── */}
-        {currentStep < 3 && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: '40px',
-              paddingTop: '24px',
-              borderTop: '1px solid rgba(255,255,255,0.04)',
-            }}
-          >
-            {currentStep > 0 ? (
-              <button
-                onClick={handleBack}
-                style={{
-                  padding: '12px 28px',
-                  background: 'transparent',
-                  color: 'rgba(255,255,255,0.35)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  cursor: 'pointer',
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '12px',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  borderRadius: '2px',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.color = 'rgba(255,255,255,0.6)'
-                  el.style.borderColor = 'rgba(255,255,255,0.2)'
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.color = 'rgba(255,255,255,0.35)'
-                  el.style.borderColor = 'rgba(255,255,255,0.1)'
-                }}
-              >
-                BACK
-              </button>
-            ) : (
-              <div />
             )}
-            <button
-              onClick={handleNext}
-              style={{
-                padding: '12px 32px',
-                background: '#00FF80',
-                color: '#080808',
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '12px',
-                fontWeight: 500,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                borderRadius: '2px',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLButtonElement
-                el.style.boxShadow = '0 0 24px rgba(0,255,128,0.15)'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLButtonElement
-                el.style.boxShadow = 'none'
-              }}
-            >
-              CONTINUE
-            </button>
+
+            {/* STEP 3 */}
+            {step === 2 && (
+              <div>
+                <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--d-text)', marginBottom: '6px', letterSpacing: '-0.02em' }}>What do you need?</h1>
+                <p style={{ fontSize: '14px', color: 'var(--d-text-muted)', marginBottom: '28px' }}>Select your tools and preferences.</p>
+                <label style={lblStyle}>Tools</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '28px' }}>
+                  {TOOLS_LIST.map(tool => {
+                    const on = tools.includes(tool)
+                    return (
+                      <button key={tool} onClick={() => toggleArr(tools, tool, setTools)} style={{
+                        display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', cursor: 'pointer', borderRadius: '10px', transition: 'all 0.2s ease', textAlign: 'left', fontFamily: f, fontSize: '13px',
+                        background: on ? 'var(--d-accent-light)' : 'var(--d-glass-bg)', backdropFilter: 'blur(8px)',
+                        border: on ? '1.5px solid var(--d-accent-border)' : '1px solid var(--d-border)',
+                        color: on ? 'var(--d-text)' : 'var(--d-text-muted)', fontWeight: on ? 500 : 400,
+                      }}>
+                        <div style={{ width: '18px', height: '18px', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                          border: on ? 'none' : '1.5px solid var(--d-border)', background: on ? 'var(--d-accent)' : 'transparent' }}>
+                          {on && <span style={{ color: '#fff', fontSize: '10px', fontWeight: 700 }}>✓</span>}
+                        </div>
+                        {tool}
+                      </button>
+                    )
+                  })}
+                </div>
+                <label style={lblStyle}>Default reel style</label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '28px' }}>
+                  {REEL_STYLES.map(s => <button key={s} onClick={() => setReelStyle(s)} style={pillBtn(reelStyle === s)}>{s}</button>)}
+                </div>
+                <label style={lblStyle}>Target platforms</label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {PLATFORMS_LIST.map(p => <button key={p} onClick={() => toggleArr(platforms, p, setPlatforms)} style={pillBtn(platforms.includes(p))}>{p}</button>)}
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4 */}
+            {step === 3 && (
+              <div>
+                <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--d-text)', marginBottom: '6px', letterSpacing: '-0.02em' }}>Connect your platforms</h1>
+                <p style={{ fontSize: '14px', color: 'var(--d-text-muted)', marginBottom: '28px' }}>Optional — you can do this later in settings.</p>
+                {['YouTube', 'Spotify', 'LinkedIn'].map(p => (
+                  <button key={p} onClick={() => !connected[p] && !connecting[p] && handleConnect(p)} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px 18px',
+                    background: connected[p] ? 'var(--d-accent-light)' : 'var(--d-glass-bg)', backdropFilter: 'blur(8px)',
+                    border: connected[p] ? '1.5px solid var(--d-accent-border)' : '1px solid var(--d-border)',
+                    color: connected[p] ? 'var(--d-accent)' : 'var(--d-text-secondary)', fontFamily: f, fontSize: '14px', fontWeight: 500,
+                    cursor: connected[p] ? 'default' : 'pointer', borderRadius: '10px', marginBottom: '10px', transition: 'all 0.2s ease',
+                  }}>
+                    <span>{connecting[p] ? 'Connecting...' : `Connect ${p}`}</span>
+                    {connected[p] && <span style={{ color: 'var(--d-accent)', fontSize: '14px', fontWeight: 600 }}>✓ Connected</span>}
+                  </button>
+                ))}
+                <div onClick={() => router.push('/dashboard')} style={{
+                  width: '100%', padding: '14px', fontFamily: f, fontWeight: 700, fontSize: '15px',
+                  textAlign: 'center', cursor: 'pointer', borderRadius: '12px', marginTop: '24px',
+                  background: 'var(--d-gradient)', color: '#fff',
+                  boxShadow: '0 4px 20px rgba(16,185,129,0.3)',
+                  transition: 'all 0.2s ease',
+                }}>Launch your brain →</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Nav */}
+        {step < 3 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '28px' }}>
+            {step > 0 ? (
+              <button onClick={() => setStep(step - 1)} style={{ padding: '10px 22px', background: 'var(--d-glass-bg)', backdropFilter: 'blur(8px)', color: 'var(--d-text-muted)', border: '1px solid var(--d-border)', cursor: 'pointer', fontFamily: f, fontSize: '13px', fontWeight: 500, borderRadius: '10px', transition: 'all 0.2s ease' }}>Back</button>
+            ) : <div />}
+            <button onClick={() => setStep(step + 1)} style={{ padding: '10px 28px', background: 'var(--d-accent)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: f, fontSize: '13px', fontWeight: 600, borderRadius: '10px', boxShadow: '0 2px 12px rgba(16,185,129,0.25)', transition: 'all 0.2s ease' }}>Continue</button>
           </div>
         )}
       </div>

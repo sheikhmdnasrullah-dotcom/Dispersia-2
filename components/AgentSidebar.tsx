@@ -1,291 +1,113 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface AgentSidebarProps {
   isOpen: boolean
   onClose: () => void
 }
 
-interface Message {
-  id: number
-  role: 'agent' | 'user'
-  text: string
-  time: string
-}
+interface Message { id: number; role: 'agent' | 'user'; text: string; time: string }
 
-const INITIAL_MESSAGES: Message[] = [
-  {
-    id: 1,
-    role: 'agent',
-    text: 'Good morning. I processed Episode 12 overnight — 3 reels are queued for your review. Your guest profile for next week is also ready.',
-    time: '8:02 AM',
-  },
-  {
-    id: 2,
-    role: 'user',
-    text: 'Show me the reel performance from last week.',
-    time: '8:15 AM',
-  },
-  {
-    id: 3,
-    role: 'agent',
-    text: 'Last 7 days: 4.2k impressions, 312 engagements, 89 new followers across platforms. Your top reel was "The compound effect of consistency" — 1.8k views on TikTok. Want me to create more clips in that style?',
-    time: '8:15 AM',
-  },
+const INITIAL: Message[] = [
+  { id: 1, role: 'user', text: "What's the status on episode 12?", time: '8:02 AM' },
+  { id: 2, role: 'agent', text: "Episode 12 is fully processed. Transcript ready. 8 clip candidates found (top score: 91). Content Pack not generated yet. Want me to run it?", time: '8:02 AM' },
+  { id: 3, role: 'user', text: 'Yes, run the content pack and cut the top 3 clips', time: '8:03 AM' },
+  { id: 4, role: 'agent', text: "On it. Content Pack queued (ETA: 45s). Clips rendering for 08:45, 24:30, 41:00. I'll notify you when done.", time: '8:03 AM' },
+  { id: 5, role: 'agent', text: '✓ Content Pack complete. ✓ 3 clips exported.', time: '8:04 AM' },
 ]
 
-const SUGGESTIONS = ['Cut best clips', 'Research next guest', 'Show performance']
+const RESPONSES = [
+  "Processing now. Found 5 clips above score 80. Top clip starts at 08:45 with hook strength 91. Want me to export all 5?",
+  "Weekly brief ready. 4.2k impressions, 312 engagements, 89 new followers. Top reel: 'The compound effect' — 1,841 views on TikTok.",
+  "Guest researched: Sarah Kim, Founder of DataLayer. Profile ready, 10 questions generated. Want the edit brief sent to your email?",
+  "Performance check: YouTube 2,840 views (68% retention), LinkedIn 1.2k impressions. LinkedIn posts outperform other platforms by 3.2x.",
+]
 
 export default function AgentSidebar({ isOpen, onClose }: AgentSidebarProps) {
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES)
+  const [messages, setMessages] = useState<Message[]>(INITIAL)
   const [input, setInput] = useState('')
+  const [typing, setTyping] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const idx = useRef(0)
 
-  function handleSend() {
-    if (!input.trim()) return
-    const newMsg: Message = {
-      id: Date.now(),
-      role: 'user',
-      text: input.trim(),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    }
-    setMessages((prev) => [...prev, newMsg])
-    setInput('')
+  useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight }, [messages])
 
-    // Simulate agent response
+  function send() {
+    const text = input.trim() || 'What should I work on?'
+    setMessages(prev => [...prev, { id: Date.now(), role: 'user', text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }])
+    setInput(''); setTyping(true)
     setTimeout(() => {
-      const agentReply: Message = {
-        id: Date.now() + 1,
-        role: 'agent',
-        text: 'Processing your request. I\'ll have results ready in a moment.',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      }
-      setMessages((prev) => [...prev, agentReply])
+      setMessages(prev => [...prev, { id: Date.now() + 1, role: 'agent', text: RESPONSES[idx.current % RESPONSES.length], time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }])
+      idx.current++; setTyping(false)
     }, 1200)
-  }
-
-  function handleSuggestion(suggestion: string) {
-    setInput(suggestion)
   }
 
   if (!isOpen) return null
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        right: 0,
-        top: '56px',
-        height: 'calc(100vh - 56px)',
-        width: '380px',
-        background: '#090909',
-        borderLeft: '1px solid rgba(0,255,128,0.12)',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 50,
-        animation: 'slide-in-right 0.25s ease',
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+    <div style={{
+      position: 'fixed', right: 0, top: '56px', height: 'calc(100vh - 56px - 32px)',
+      width: '380px', background: 'var(--d-glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+      borderLeft: '1px solid var(--d-glass-border)',
+      display: 'flex', flexDirection: 'column', zIndex: 50, animation: 'slide-in-right 0.25s ease',
+      fontFamily: "'Inter', sans-serif",
+    }}>
+      <div style={{ padding: '18px 22px', borderBottom: '1px solid var(--d-border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 700,
-              fontSize: '14px',
-              color: '#ffffff',
-              marginBottom: '6px',
-            }}
-          >
-            DISPERSIA AGENT
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 700 }}><span className="gradient-text">Agent</span></span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div
-              style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                background: '#00FF80',
-                animation: 'pulse-dot 2s infinite',
-              }}
-            />
-            <span
-              style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '10px',
-                color: 'rgba(255,255,255,0.4)',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-              }}
-            >
-              24/7 • ONLINE
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div className="status-dot" />
+            <span style={{ fontSize: '11px', color: 'var(--d-text-muted)' }}>Online</span>
           </div>
         </div>
-        <button
-          onClick={onClose}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'rgba(255,255,255,0.3)',
-            fontSize: '20px',
-            cursor: 'pointer',
-            fontFamily: "'IBM Plex Mono', monospace",
-            padding: '4px 8px',
-            transition: 'color 0.2s',
-          }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#ffffff' }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.3)' }}
-        >
-          ✕
-        </button>
+        <button onClick={onClose} style={{ background: 'var(--d-glass-bg)', border: '1px solid var(--d-border)', color: 'var(--d-text-muted)', fontSize: '14px', cursor: 'pointer', padding: '4px 10px', borderRadius: '8px', transition: 'all 0.15s ease' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--d-accent-border)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--d-border)' }}>✕</button>
       </div>
 
-      {/* Messages */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '16px 24px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-        }}
-      >
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            style={{
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              maxWidth: '90%',
-            }}
-          >
-            <div
-              style={{
-                padding: '12px 14px',
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '13px',
-                lineHeight: '1.7',
-                borderRadius: '2px',
-                ...(msg.role === 'agent'
-                  ? {
-                      background: 'rgba(0,255,128,0.04)',
-                      borderLeft: '2px solid #00FF80',
-                      color: 'rgba(255,255,255,0.85)',
-                    }
-                  : {
-                      background: 'rgba(255,255,255,0.04)',
-                      color: 'rgba(255,255,255,0.75)',
-                    }),
-              }}
-            >
-              {msg.text}
-            </div>
-            <div
-              style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '10px',
-                color: 'rgba(255,255,255,0.2)',
-                marginTop: '4px',
-                textAlign: msg.role === 'user' ? 'right' : 'left',
-              }}
-            >
-              {msg.time}
-            </div>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {messages.map(m => (
+          <div key={m.id} style={{ alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
+            <div style={{
+              padding: '10px 14px', fontSize: '13px', lineHeight: 1.6,
+              ...(m.role === 'agent'
+                ? { background: 'var(--d-accent-light)', borderLeft: '2px solid var(--d-accent)', borderRadius: '0 10px 10px 0', color: 'var(--d-text)' }
+                : { background: 'var(--d-bg-secondary)', borderRadius: '10px', color: 'var(--d-text)' }),
+            }}>{m.text}</div>
+            <div style={{ fontSize: '10px', color: 'var(--d-text-muted)', marginTop: '3px', textAlign: m.role === 'user' ? 'right' : 'left' }}>{m.time}</div>
           </div>
         ))}
+        {typing && (
+          <div style={{ alignSelf: 'flex-start' }}>
+            <div style={{ background: 'var(--d-accent-light)', borderLeft: '2px solid var(--d-accent)', padding: '10px 14px', borderRadius: '0 10px 10px 0' }}>
+              <span style={{ fontSize: '13px', color: 'var(--d-text-muted)' }}>Thinking...</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Input Area */}
-      <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div style={{ padding: '14px 22px', borderTop: '1px solid var(--d-border-light)' }}>
         <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                handleSend()
-              }
-            }}
-            rows={1}
-            placeholder="Ask the agent..."
-            style={{
-              flex: 1,
-              background: '#0f0f0f',
-              border: '1px solid rgba(255,255,255,0.1)',
-              color: '#ffffff',
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: '13px',
-              padding: '10px 14px',
-              outline: 'none',
-              resize: 'none',
-              borderRadius: '2px',
-              transition: 'border-color 0.2s',
-            }}
-            onFocus={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = '#00FF80' }}
-            onBlur={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
-          />
-          <button
-            onClick={handleSend}
-            style={{
-              background: '#00FF80',
-              color: '#080808',
-              border: 'none',
-              padding: '10px 16px',
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: '11px',
-              fontWeight: 500,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              borderRadius: '2px',
-              transition: 'opacity 0.2s',
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.85' }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '1' }}
-          >
-            SEND
-          </button>
+          <textarea value={input} onChange={e => setInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
+            rows={1} placeholder="Message agent..."
+            style={{ flex: 1, background: 'var(--d-surface-solid)', border: '1px solid var(--d-border)', color: 'var(--d-text)', fontFamily: "'Inter', sans-serif", fontSize: '13px', padding: '10px 14px', outline: 'none', resize: 'none', borderRadius: '10px', transition: 'border-color 0.2s ease' }}
+            onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = 'var(--d-accent)' }}
+            onBlur={e => { (e.target as HTMLTextAreaElement).style.borderColor = 'var(--d-border)' }} />
+          <button onClick={send} style={{ background: 'var(--d-accent)', color: '#fff', border: 'none', padding: '10px 16px', fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, cursor: 'pointer', borderRadius: '10px', boxShadow: '0 2px 12px rgba(16,185,129,0.25)' }}>Send</button>
         </div>
-
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          {SUGGESTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => handleSuggestion(s)}
-              style={{
-                background: 'rgba(0,255,128,0.06)',
-                border: '1px solid rgba(0,255,128,0.15)',
-                color: 'rgba(0,255,128,0.7)',
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '10px',
-                padding: '5px 10px',
-                cursor: 'pointer',
-                borderRadius: '2px',
-                letterSpacing: '0.04em',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLButtonElement
-                el.style.borderColor = '#00FF80'
-                el.style.color = '#00FF80'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLButtonElement
-                el.style.borderColor = 'rgba(0,255,128,0.15)'
-                el.style.color = 'rgba(0,255,128,0.7)'
-              }}
-            >
+        <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+          {['Cut clips', 'Research guest', 'Weekly brief', 'Performance'].map(s => (
+            <button key={s} onClick={() => setInput(s)} style={{
+              background: 'var(--d-glass-bg)', border: '1px solid var(--d-border)',
+              color: 'var(--d-text-muted)', fontSize: '11px', padding: '5px 10px',
+              cursor: 'pointer', borderRadius: '8px', transition: 'all 0.15s ease', fontFamily: "'Inter', sans-serif",
+            }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--d-accent)'; e.currentTarget.style.borderColor = 'var(--d-accent-border)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--d-text-muted)'; e.currentTarget.style.borderColor = 'var(--d-border)' }}>
               {s}
             </button>
           ))}

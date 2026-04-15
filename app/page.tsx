@@ -1,233 +1,346 @@
 'use client'
 
+import Link from 'next/link'
+import Navbar from '@/components/Navbar'
+
 const TOOLS = [
-  { id: 1, name: 'Reel Finder', desc: 'AI finds your best clips automatically', icon: '◈' },
-  { id: 2, name: 'Auto Captions', desc: 'Burned-in captions in 3 style presets', icon: '◉' },
-  { id: 3, name: 'Multi-Platform Resizer', desc: '9:16, 1:1, 16:9 in one click', icon: '⊞' },
-  { id: 4, name: 'Show Notes Generator', desc: 'Formatted notes with timestamps', icon: '◎' },
-  { id: 5, name: 'Chapter Markers', desc: 'YouTube chapters from your transcript', icon: '▤' },
-  { id: 6, name: 'Blog Post Writer', desc: 'Long-form SEO post from any episode', icon: '◍' },
-  { id: 7, name: 'YouTube Description', desc: 'Optimized descriptions that rank', icon: '▣' },
-  { id: 8, name: 'Title Generator', desc: '10 title variants ranked by click potential', icon: '◆' },
-  { id: 9, name: 'Newsletter Writer', desc: 'Ready-to-send newsletter from episode', icon: '◇' },
-  { id: 10, name: 'Transcript Editor', desc: 'Click any word to jump to timestamp', icon: '▦' },
-  { id: 11, name: 'Silence Remover', desc: 'Remove dead air from your audio', icon: '◑' },
-  { id: 12, name: 'Filler Word Detector', desc: 'Find every um, uh, like in your episode', icon: '◐' },
-  { id: 13, name: 'Audio Cleanup', desc: 'Noise removal, -14 LUFS normalization', icon: '◒' },
-  { id: 14, name: 'Thumbnail Generator', desc: 'Branded thumbnails in seconds', icon: '▨' },
-  { id: 15, name: 'Quote Card Generator', desc: '10 shareable cards per episode', icon: '◈' },
-  { id: 16, name: 'Audiogram Generator', desc: 'Waveform video for LinkedIn and Twitter', icon: '◉' },
-  { id: 17, name: 'Guest Research Brief', desc: '10 interview questions, auto-generated', icon: '◎' },
-  { id: 18, name: 'Sponsor Pitch Generator', desc: 'Full pitch deck from your stats', icon: '◆' },
-  { id: 19, name: 'Publishing Checklist', desc: 'AI checks off tasks it already completed', icon: '▤' },
-  { id: 20, name: 'Show Manager Agent', desc: 'Weekly briefing while you sleep', icon: '◍' },
+  { num: '01', name: 'Transcription', desc: 'Multi-speaker diarization with semantic chunking and click-to-seek search', icon: '🎙️', size: 'wide' },
+  { num: '02', name: 'Editorial Direction', desc: 'Guest intelligence from LinkedIn, press, Twitter — auto-generated edit briefs', icon: '📋', size: 'normal' },
+  { num: '03', name: 'Podcast to Reels', desc: 'AI finds, scores, and captions your best clips in 9:16, 1:1, and 16:9', icon: '🎬', size: 'normal' },
+  { num: '04', name: 'Content Pack', desc: 'Show notes, blog posts, titles, newsletters, social posts — all in your exact voice', icon: '✍️', size: 'wide' },
+  { num: '05', name: 'Visual Engine', desc: 'Brand-aware thumbnails, quote cards, and audiogram frames rendered automatically', icon: '🎨', size: 'normal' },
+  { num: '06', name: 'Distribution', desc: 'Schedule across YouTube, Spotify, LinkedIn, TikTok with unified analytics', icon: '📡', size: 'normal' },
+  { num: '07', name: 'Dyspersia Agent', desc: 'Your 24/7 AI producer — message it from Telegram, Discord, or WhatsApp', icon: '🤖', size: 'wide' },
+]
+
+const PRICING = [
+  { name: 'Starter', price: '$49', features: ['3 episodes/month', 'All content tools', 'Transcription + Reels', 'Email support'] },
+  { name: 'Pro', price: '$99', badge: true, features: ['15 episodes/month', 'Everything in Starter', 'Editorial Direction', 'Dyspersia Agent (web)', 'Priority processing'] },
+  { name: 'Studio', price: '$199', features: ['Unlimited episodes', 'Everything in Pro', 'Agent everywhere', 'Visual Engine', 'Distribution + Analytics'] },
 ]
 
 export default function HomePage() {
+  const f = "'Inter', sans-serif"
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#080808',
-      fontFamily: "'IBM Plex Mono', monospace",
-      backgroundImage: `
-        linear-gradient(rgba(0,255,128,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,128,0.03) 1px, transparent 1px)
-      `,
-      backgroundSize: '40px 40px',
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        .tool-card {
-          padding: 24px;
-          border: 1px solid #111;
-          background: #090909;
-          transition: border-color 0.2s, background 0.2s;
-          position: relative;
-          overflow: hidden;
-        }
-        .tool-card:hover {
-          border-color: #1e1e1e;
-          background: #0d0d0d;
-        }
-        .tool-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(0,255,128,0.1), transparent);
-          opacity: 0;
-          transition: opacity 0.2s;
-        }
-        .tool-card:hover::before { opacity: 1; }
-        .nav-btn {
-          padding: '10px 24px';
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 11px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          cursor: pointer;
-          text-decoration: none;
-          transition: all 0.2s;
-        }
-      `}</style>
+    <div style={{ minHeight: '100vh', fontFamily: f, overflow: 'hidden' }}>
+      {/* ── NAV ── */}
+      <Navbar />
 
-      {/* Navbar */}
-      <nav style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '20px 40px', borderBottom: '1px solid #111',
-        position: 'sticky', top: 0, background: 'rgba(8,8,8,0.95)',
-        backdropFilter: 'blur(10px)', zIndex: 100,
+      {/* ── HERO ── */}
+      <section style={{
+        minHeight: '100vh', display: 'flex', flexDirection: 'column',
+        justifyContent: 'center', alignItems: 'center', textAlign: 'center',
+        padding: '120px 24px 80px', position: 'relative',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 7, height: 7, background: '#00ff80', borderRadius: '50%' }} />
-          <span style={{ color: '#00ff80', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            Dispersia
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <a href="/login" style={{
-            padding: '10px 20px', background: 'transparent', color: '#444',
-            border: '1px solid #1e1e1e', textDecoration: 'none',
-            fontSize: 11, fontFamily: "'IBM Plex Mono', monospace",
-            letterSpacing: '0.08em', textTransform: 'uppercase',
-          }}>
-            Log in
-          </a>
-          <a href="/signup" style={{
-            padding: '10px 20px', background: '#00ff80', color: '#080808',
-            textDecoration: 'none', fontSize: 11,
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase',
-          }}>
-            Get started
-          </a>
-        </div>
-      </nav>
+        {/* Floating blobs */}
+        <div className="blob blob-1" style={{ top: '10%', left: '10%' }} />
+        <div className="blob blob-2" style={{ top: '60%', right: '5%' }} />
+        <div className="blob blob-3" style={{ bottom: '10%', left: '30%' }} />
 
-      {/* Hero */}
-      <div style={{
-        maxWidth: 800, margin: '0 auto',
-        padding: '100px 40px 80px', textAlign: 'center',
-      }}>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+
+          {/* Headline */}
+          <h1 style={{
+            fontSize: 'clamp(44px, 7vw, 80px)', fontWeight: 800, lineHeight: 1.05,
+            marginBottom: '24px', letterSpacing: '-0.04em',
+          }}>
+            <span style={{ color: 'var(--d-text)' }}>The AI brain for</span>
+            <br />
+            <span className="gradient-text">podcast creators.</span>
+          </h1>
+
+          {/* Subhead */}
+          <p style={{
+            fontSize: '17px', color: 'var(--d-text-secondary)', lineHeight: 1.7,
+            maxWidth: '500px', margin: '0 auto 36px', fontWeight: 400,
+          }}>
+            Upload one episode. Get clips, captions, show notes, titles, newsletters,
+            thumbnails and more — all written in your exact voice.
+          </p>
+
+          {/* CTA */}
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '16px' }}>
+            <Link href="/signup" style={{
+              padding: '14px 32px', background: 'var(--d-accent)', color: '#fff',
+              textDecoration: 'none', fontSize: '15px', fontWeight: 600, borderRadius: '10px',
+              transition: 'all 0.2s ease', boxShadow: '0 4px 24px rgba(16,185,129,0.25)',
+            }}>Start for free →</Link>
+            <Link href="/login" style={{
+              padding: '14px 32px', background: 'var(--d-glass-bg)', backdropFilter: 'blur(12px)',
+              border: '1px solid var(--d-border)', color: 'var(--d-text-secondary)',
+              textDecoration: 'none', fontSize: '15px', fontWeight: 500, borderRadius: '10px',
+              transition: 'all 0.2s ease',
+            }}>Log in</Link>
+          </div>
+          <p style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>
+            No credit card · First episode free · Cancel anytime
+          </p>
+        </div>
+
+        {/* Floating terminal mockup */}
         <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '6px 14px', border: '1px solid rgba(0,255,128,0.15)',
-          background: 'rgba(0,255,128,0.04)', marginBottom: 32,
+          position: 'relative', zIndex: 1, marginTop: '60px', width: '100%', maxWidth: '680px',
         }}>
-          <div style={{ width: 5, height: 5, background: '#00ff80', borderRadius: '50%' }} />
-          <span style={{ color: '#00ff80', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            20 tools. One upload. Your voice.
-          </span>
-        </div>
-
-        <h1 style={{
-          fontFamily: "'Syne', sans-serif", fontSize: 58, fontWeight: 800,
-          color: '#f0f0f0', lineHeight: 1.05, marginBottom: 24,
-        }}>
-          The AI brain for<br />
-          <span style={{ color: '#00ff80' }}>podcast creators.</span>
-        </h1>
-
-        <p style={{
-          color: '#333', fontSize: 13, lineHeight: 1.9,
-          marginBottom: 48, maxWidth: 480, margin: '0 auto 48px',
-          letterSpacing: '0.03em',
-        }}>
-          Upload one episode. Get clips, captions, show notes, titles, newsletters,
-          thumbnails and more. All written in your exact voice.
-        </p>
-
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-          <a href="/signup" style={{
-            padding: '16px 40px', background: '#00ff80', color: '#080808',
-            textDecoration: 'none', fontSize: 12,
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase',
+          <div className="glass-card" style={{
+            padding: '20px', boxShadow: 'var(--d-shadow-lg)',
           }}>
-            Start for free
-          </a>
-          <a href="/login" style={{
-            padding: '16px 40px', background: 'transparent', color: '#444',
-            textDecoration: 'none', fontSize: 12,
-            fontFamily: "'IBM Plex Mono', monospace",
-            letterSpacing: '0.08em', border: '1px solid #1e1e1e',
-          }}>
-            Log in
-          </a>
-        </div>
-      </div>
-
-      {/* Tools Grid */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px 100px' }}>
-        <div style={{ marginBottom: 40, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <span style={{ color: '#222', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            20 tools included
-          </span>
-          <div style={{ flex: 1, height: 1, background: '#111' }} />
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-          gap: 1, background: '#111',
-        }}>
-          {TOOLS.map(tool => (
-            <div key={tool.id} className="tool-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                <span style={{ color: '#1a1a1a', fontSize: 20 }}>{tool.icon}</span>
-                <span style={{
-                  fontSize: 9, color: '#1e1e1e', letterSpacing: '0.1em',
-                  textTransform: 'uppercase', border: '1px solid #161616',
-                  padding: '3px 8px',
-                }}>
-                  {String(tool.id).padStart(2, '0')}
+            {/* Terminal header dots */}
+            <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ff5f57' }} />
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#febc2e' }} />
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#28c840' }} />
+              <span style={{ marginLeft: '12px', fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 500 }}>dyspersia agent — active</span>
+            </div>
+            {/* Chat lines */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '12px', color: 'var(--d-text-muted)', minWidth: '32px', fontWeight: 500 }}>you</span>
+                <span style={{ fontSize: '13px', color: 'var(--d-text)', lineHeight: 1.5, background: 'var(--d-bg-secondary)', padding: '8px 14px', borderRadius: '8px' }}>Cut the 3 best clips from episode 42 and send them to my phone</span>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '12px', minWidth: '32px', fontWeight: 500 }}>
+                  <span className="gradient-text">ai</span>
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--d-text)', lineHeight: 1.5, padding: '8px 14px', borderRadius: '0 8px 8px 0', borderLeft: '2px solid var(--d-accent)', background: 'var(--d-accent-light)' }}>
+                  Done. 3 clips exported. Scores: 91, 87, 82. Formats: 9:16 for TikTok/Reels. Sent to your Telegram.
                 </span>
               </div>
-              <div style={{ color: '#555', fontSize: 12, fontWeight: 500, marginBottom: 6, letterSpacing: '0.03em' }}>
-                {tool.name}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '12px', minWidth: '32px', fontWeight: 500 }}>
+                  <span className="gradient-text">ai</span>
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--d-text)', lineHeight: 1.5, padding: '8px 14px', borderRadius: '0 8px 8px 0', borderLeft: '2px solid var(--d-accent)', background: 'var(--d-accent-light)' }}>
+                  Also — I noticed clip #1 has 91% hook strength. I&apos;ve drafted a Twitter thread and LinkedIn post around it. Want me to schedule?
+                </span>
               </div>
-              <div style={{ color: '#222', fontSize: 11, lineHeight: 1.6 }}>
-                {tool.desc}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TOOLS (Bento Grid) ── */}
+      <section id="tools" style={{ maxWidth: '1000px', margin: '0 auto', padding: '100px 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>
+            <span className="gradient-text">TOOLS</span>
+          </span>
+          <h2 style={{ fontSize: '36px', fontWeight: 800, marginTop: '8px', letterSpacing: '-0.03em', color: 'var(--d-text)' }}>
+            Everything you need. Nothing you don&apos;t.
+          </h2>
+        </div>
+
+        <div className="bento-grid">
+          {TOOLS.map((tool, i) => (
+            <div
+              key={tool.num}
+              className="glass-card"
+              style={{
+                padding: '28px',
+                cursor: 'default',
+                gridColumn: tool.size === 'wide' ? 'span 2' : 'span 1',
+                animation: `fade-in 0.4s ease ${i * 0.06}s both`,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <span style={{ fontSize: '24px' }}>{tool.icon}</span>
+                <div>
+                  <span style={{ fontSize: '10px', color: 'var(--d-text-muted)', fontWeight: 500 }}>{tool.num}</span>
+                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--d-text)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>{tool.name}</h3>
+                </div>
               </div>
-              <div style={{ marginTop: 16 }}>
-                <a href="/signup" style={{
-                  fontSize: 10, color: '#2a2a2a', textDecoration: 'none',
-                  letterSpacing: '0.08em', textTransform: 'uppercase',
-                  borderBottom: '1px solid #1a1a1a', paddingBottom: 2,
-                }}>
-                  Unlock
-                </a>
-              </div>
+              <p style={{ fontSize: '14px', color: 'var(--d-text-secondary)', lineHeight: 1.6 }}>{tool.desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Bottom CTA */}
-      <div style={{
-        borderTop: '1px solid #111', padding: '80px 40px',
-        textAlign: 'center',
-      }}>
-        <h2 style={{
-          fontFamily: "'Syne', sans-serif", fontSize: 36, fontWeight: 800,
-          color: '#f0f0f0', marginBottom: 16,
-        }}>
-          Ready to build your brain?
-        </h2>
-        <p style={{ color: '#333', fontSize: 12, marginBottom: 32, letterSpacing: '0.05em' }}>
-          First episode is free. No credit card required.
+      {/* ── HOW IT WORKS ── */}
+      <section id="how-it-works" style={{ padding: '100px 24px', position: 'relative' }}>
+        <div className="blob blob-2" style={{ top: '20%', right: '10%', opacity: 0.5 }} />
+        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>
+              <span className="gradient-text">PROCESS</span>
+            </span>
+            <h2 style={{ fontSize: '36px', fontWeight: 800, marginTop: '8px', letterSpacing: '-0.03em', color: 'var(--d-text)' }}>
+              Three steps. Zero effort.
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+            {[
+              { n: '01', title: 'Upload', body: 'YouTube URL, RSS link, or drag-and-drop. Google Drive and resumable uploads supported.', icon: '⬆️' },
+              { n: '02', title: 'Process', body: 'Dyspersia transcribes, analyzes, researches, scores clips, and generates content — one background job.', icon: '⚡' },
+              { n: '03', title: 'Create', body: 'Clips captioned. Blog written. Show notes timestamped. Titles ranked. Download or schedule.', icon: '✨' },
+            ].map((s, i) => (
+              <div key={s.n} className="glass-card" style={{ padding: '32px', textAlign: 'center', animation: `fade-in 0.4s ease ${i * 0.1}s both` }}>
+                <div style={{ fontSize: '28px', marginBottom: '16px' }}>{s.icon}</div>
+                <div style={{ fontSize: '32px', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '4px' }}>
+                  <span className="gradient-text">{s.n}</span>
+                </div>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--d-text)', marginBottom: '10px', letterSpacing: '-0.01em' }}>{s.title}</h3>
+                <p style={{ fontSize: '14px', color: 'var(--d-text-secondary)', lineHeight: 1.6 }}>{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CREATOR BRAIN ── */}
+      <section style={{ padding: '100px 24px', background: 'var(--d-gradient-subtle)', borderTop: '1px solid var(--d-border)', borderBottom: '1px solid var(--d-border)' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', display: 'flex', gap: '48px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 380px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>
+              <span className="gradient-text">CREATOR BRAIN</span>
+            </span>
+            <h2 style={{ fontSize: '30px', fontWeight: 800, color: 'var(--d-text)', margin: '8px 0 16px', lineHeight: 1.15, letterSpacing: '-0.03em' }}>
+              It learns your voice.<br />Then it <span className="gradient-text">writes like you.</span>
+            </h2>
+            <p style={{ fontSize: '15px', color: 'var(--d-text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
+              Every generation improves. Feed it a newsletter, brand doc, or philosophy.
+              It stores your voice fingerprint, audience profile, and performance history.
+            </p>
+            {['Voice fingerprint and writing rhythm', 'Audience profile and vocabulary', 'Brand colors, fonts, caption style', 'Performance data across platforms', 'Custom knowledge base'].map(item => (
+              <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <span style={{ color: 'var(--d-accent)', fontSize: '14px' }}>✓</span>
+                <span style={{ fontSize: '14px', color: 'var(--d-text-secondary)' }}>{item}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ flex: '1 1 320px' }}>
+            <div className="glass-card" style={{ padding: '24px', boxShadow: 'var(--d-shadow-md)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--d-text)' }}>Creator Brain</span>
+                <span style={{ fontSize: '11px', fontWeight: 500, padding: '2px 10px', borderRadius: '6px', background: 'var(--d-accent-light)', color: 'var(--d-accent)' }}>Active</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                <div style={{ flex: 1, height: '6px', background: 'var(--d-bg-tertiary)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: '78%', height: '100%', borderRadius: '3px', background: 'var(--d-gradient)' }} />
+                </div>
+                <span style={{ fontSize: '12px', fontWeight: 600 }}><span className="gradient-text">78%</span></span>
+              </div>
+              {[{ l: 'Voice', v: 'Conversational, data-driven' }, { l: 'Audience', v: 'Founders, operators' }, { l: 'Style', v: 'Bold Highlight' }, { l: 'Updated', v: '2 hours ago' }].map(r => (
+                <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 0', borderBottom: '1px solid var(--d-border-light)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>{r.l}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--d-text-secondary)' }}>{r.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section id="pricing" style={{ maxWidth: '1000px', margin: '0 auto', padding: '100px 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>
+            <span className="gradient-text">PRICING</span>
+          </span>
+          <h2 style={{ fontSize: '36px', fontWeight: 800, marginTop: '8px', letterSpacing: '-0.03em', color: 'var(--d-text)' }}>
+            Simple. Transparent. Cancel anytime.
+          </h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+          {PRICING.map(plan => (
+            <div key={plan.name} className={plan.badge ? '' : 'glass-card'} style={{
+              padding: '32px', borderRadius: '12px', position: 'relative',
+              ...(plan.badge ? {
+                background: 'var(--d-surface-solid)',
+                border: '2px solid transparent',
+                backgroundClip: 'padding-box',
+                boxShadow: '0 0 0 2px var(--d-accent), var(--d-shadow-lg)',
+              } : {}),
+            }}>
+              {plan.badge && (
+                <div style={{
+                  position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)',
+                  padding: '4px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, color: '#fff',
+                  background: 'var(--d-gradient)', boxShadow: '0 2px 12px rgba(16,185,129,0.3)',
+                }}>Popular</div>
+              )}
+              <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--d-text-secondary)', marginBottom: '6px' }}>{plan.name}</div>
+              <div style={{ marginBottom: '24px' }}>
+                <span style={{ fontSize: '42px', fontWeight: 800, letterSpacing: '-0.04em' }}>
+                  <span className="gradient-text">{plan.price}</span>
+                </span>
+                <span style={{ fontSize: '14px', color: 'var(--d-text-muted)' }}>/mo</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
+                {plan.features.map(f => (
+                  <div key={f} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <span style={{ color: 'var(--d-accent)', fontSize: '14px' }}>✓</span>
+                    <span style={{ fontSize: '13px', color: 'var(--d-text-secondary)' }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/signup" style={{
+                display: 'block', textAlign: 'center', padding: '12px',
+                background: plan.badge ? 'var(--d-accent)' : 'transparent',
+                color: plan.badge ? '#fff' : 'var(--d-accent)',
+                border: plan.badge ? 'none' : '1px solid var(--d-accent-border)',
+                textDecoration: 'none', fontSize: '14px', fontWeight: 600, borderRadius: '8px',
+                transition: 'all 0.2s ease',
+                ...(plan.badge ? { boxShadow: '0 2px 12px rgba(16,185,129,0.25)' } : {}),
+              }}>Get started →</Link>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: '12px', color: 'var(--d-text-muted)', textAlign: 'center', marginTop: '28px' }}>
+          All plans include Creator Brain · Semantic Search · Cross-episode memory · 7-day trial
         </p>
-        <a href="/signup" style={{
-          padding: '16px 48px', background: '#00ff80', color: '#080808',
-          textDecoration: 'none', fontSize: 12,
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase',
-        }}>
-          Get started free
-        </a>
-      </div>
+      </section>
 
+      {/* ── CTA ── */}
+      <section style={{ padding: '100px 24px', textAlign: 'center', position: 'relative' }}>
+        <div className="blob blob-1" style={{ bottom: '0', left: '20%', opacity: 0.4 }} />
+        <div className="blob blob-3" style={{ top: '0', right: '15%', opacity: 0.3 }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <h2 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '12px' }}>
+            <span style={{ color: 'var(--d-text)' }}>Start building your </span>
+            <span className="gradient-text">content OS.</span>
+          </h2>
+          <p style={{ fontSize: '15px', color: 'var(--d-text-muted)', marginBottom: '32px' }}>20 tools. One upload. Your voice.</p>
+          <Link href="/signup" style={{
+            display: 'inline-block', padding: '16px 40px', fontSize: '16px', fontWeight: 700,
+            color: '#fff', textDecoration: 'none', borderRadius: '12px',
+            background: 'var(--d-gradient)', boxShadow: '0 4px 24px rgba(16,185,129,0.3)',
+            transition: 'all 0.2s ease',
+          }}>Start for free →</Link>
+          <p style={{ fontSize: '12px', color: 'var(--d-text-muted)', marginTop: '14px' }}>No credit card required.</p>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer style={{ background: 'var(--d-bg-secondary)', borderTop: '1px solid var(--d-border)', padding: '56px 24px 80px' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '32px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+              <div className="status-dot" />
+              <span style={{ fontWeight: 700 }}><span className="gradient-text">dyspersia</span></span>
+            </div>
+            <p style={{ fontSize: '13px', color: 'var(--d-text-muted)', lineHeight: 1.5 }}>The AI brain for podcast creators.</p>
+            <p style={{ fontSize: '11px', color: 'var(--d-text-muted)', marginTop: '8px' }}>© 2026 Dyspersia / Slidein Venture</p>
+          </div>
+          {[
+            { title: 'Tools', items: ['Transcription', 'Editorial', 'Reels', 'Content Pack', 'Distribution', 'Agent'] },
+            { title: 'Product', items: ['Pricing', 'How it Works', 'Creator Brain', 'Changelog'] },
+            { title: 'Company', items: ['About', 'Twitter', 'LinkedIn', 'Discord', 'Contact'] },
+          ].map(col => (
+            <div key={col.title}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--d-text)', marginBottom: '14px' }}>{col.title}</div>
+              {col.items.map(item => (
+                <div key={item} style={{ marginBottom: '7px' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--d-text-muted)', cursor: 'pointer', transition: 'color 0.2s ease' }}
+                    onMouseEnter={e => { (e.target as HTMLSpanElement).style.color = 'var(--d-text)' }}
+                    onMouseLeave={e => { (e.target as HTMLSpanElement).style.color = 'var(--d-text-muted)' }}>{item}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </footer>
     </div>
   )
 }
