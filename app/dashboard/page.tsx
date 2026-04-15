@@ -199,43 +199,156 @@ export default function DashboardPage() {
 
           {/* OVERVIEW */}
           {activeNav === 'Overview' && (
-            <div style={{ animation: 'fade-in 0.2s ease' }}>
-              <CreatorBrainCard completionPercent={40} />
-              <div style={{ display: 'grid', gridTemplateColumns: agentOpen ? '1fr' : '2fr 1fr', gap: '16px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '10px' }}>
-                  {TOOLS.map(t => <ToolCard key={t.title} title={t.title} description={t.description} status={t.status} onOpen={() => setActiveNav(t.tab)} />)}
+            <div style={{ animation: 'fade-in 0.25s ease' }}>
+
+              {/* Greeting */}
+              <div style={{ marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--d-text)', letterSpacing: '-0.02em', margin: 0 }}>Good morning 👋</h1>
+                <p style={{ fontSize: '13px', color: 'var(--d-text-muted)', marginTop: '4px' }}>{today} · 4 episodes this month · 3 pending repurpose</p>
+              </div>
+
+              {/* ── ROW 1: Stat Cards ── */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                {/* Episodes This Month */}
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 600, letterSpacing: '0.04em', marginBottom: '10px' }}>EPISODES THIS MONTH</div>
+                  <div style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                    <span className="gradient-text">4</span>
+                    <span style={{ fontSize: '14px', color: 'var(--d-text-muted)', fontWeight: 400 }}>/8</span>
+                  </div>
+                  {/* Usage bar */}
+                  <div style={{ height: '4px', background: 'var(--d-bg-tertiary)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ width: '50%', height: '100%', background: 'var(--d-gradient)', borderRadius: '2px' }} />
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)', marginTop: '6px' }}>4 remaining in plan</div>
                 </div>
-                {!agentOpen && (
-                  <div style={{ background: 'var(--d-surface)', border: '1px solid var(--d-border)', padding: '16px', borderRadius: '8px', height: 'fit-content' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--d-text)' }}>Briefing</span>
-                      <span style={{ fontSize: '11px', color: 'var(--d-text-muted)' }}>{today}</span>
-                    </div>
-                    {BRIEFING.map((item, i) => (
-                      <div key={i} style={{ paddingBottom: '10px', marginBottom: '10px', borderBottom: i < BRIEFING.length - 1 ? '1px solid var(--d-border-light)' : 'none' }}>
-                        <p style={{ fontSize: '13px', color: 'var(--d-text-secondary)', lineHeight: 1.5, marginBottom: '2px' }}>{item.message}</p>
-                        <span style={{ fontSize: '11px', color: 'var(--d-text-muted)' }}>{item.time}</span>
-                      </div>
+
+                {/* Clips Generated */}
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 600, letterSpacing: '0.04em', marginBottom: '10px' }}>CLIPS GENERATED</div>
+                  <div style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                    <span className="gradient-text">38</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {['9:16', '1:1', '16:9'].map(f => (
+                      <span key={f} style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '100px', background: 'var(--d-accent-light)', border: '1px solid var(--d-accent-border)', color: 'var(--d-accent)', fontWeight: 600 }}>{f}</span>
                     ))}
                   </div>
-                )}
-              </div>
-              <div style={{ marginTop: '24px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--d-text)', display: 'block', marginBottom: '12px' }}>Recent activity</span>
-                <div style={{ border: '1px solid var(--d-border)', borderRadius: '8px', overflow: 'hidden' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', padding: '10px 14px', background: 'var(--d-bg-secondary)', borderBottom: '1px solid var(--d-border)' }}>
-                    {['Episode', 'Tool', 'Status', 'Time'].map(h => <span key={h} style={{ fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 500 }}>{h}</span>)}
+                </div>
+
+                {/* Content Pieces */}
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 600, letterSpacing: '0.04em', marginBottom: '10px' }}>CONTENT PIECES</div>
+                  <div style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                    <span className="gradient-text">127</span>
                   </div>
-                  {ACTIVITY.map((row, i) => (
-                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', padding: '10px 14px', borderBottom: i < ACTIVITY.length - 1 ? '1px solid var(--d-border-light)' : 'none', alignItems: 'center' }}>
-                      <span style={{ fontSize: '13px', color: 'var(--d-text)' }}>{row.episode}</span>
-                      <span style={{ fontSize: '13px', color: 'var(--d-text-secondary)' }}>{row.tool}</span>
-                      <span style={statusStyle(row.status)}>{row.status}</span>
-                      <span style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>{row.time}</span>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)' }}>Across 10 formats this month</div>
+                </div>
+
+                {/* Brain Strength */}
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 600, letterSpacing: '0.04em', marginBottom: '10px' }}>BRAIN STRENGTH</div>
+                  <div style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                    <span className="gradient-text">78%</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'var(--d-bg-tertiary)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ width: '78%', height: '100%', background: 'var(--d-gradient)', borderRadius: '2px' }} />
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--d-text-muted)', marginTop: '6px' }}>+6% from last month</div>
+                </div>
+              </div>
+
+              {/* ── ROW 2: Recent Episodes ── */}
+              <div className="glass-card" style={{ padding: '0', overflow: 'hidden', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--d-border-light)' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--d-text)', letterSpacing: '-0.01em' }}>Recent Episodes</span>
+                  <button style={{ fontSize: '12px', color: 'var(--d-accent)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: f, fontWeight: 600 }}>+ New Episode</button>
+                </div>
+                {/* Table header */}
+                <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr 1fr 1fr', padding: '10px 20px', background: 'var(--d-bg-secondary)' }}>
+                  {['Episode', 'Date', 'Status', 'Actions'].map(h => (
+                    <span key={h} style={{ fontSize: '11px', color: 'var(--d-text-muted)', fontWeight: 600, letterSpacing: '0.03em' }}>{h}</span>
+                  ))}
+                </div>
+                {[
+                  { title: 'EP 12 — The Compound Effect', date: 'Apr 14', status: 'Ready' },
+                  { title: 'EP 11 — Hiring Your First VA',   date: 'Apr 7',  status: 'Processing' },
+                  { title: 'EP 10 — Revenue Streams',        date: 'Mar 31', status: 'Ready' },
+                  { title: 'EP 09 — Building in Public',     date: 'Mar 24', status: 'Draft' },
+                ].map((ep, i, arr) => {
+                  const statusColors: Record<string, { bg: string; color: string; border: string }> = {
+                    Ready:      { bg: 'var(--d-accent-light)', color: 'var(--d-accent)',      border: 'var(--d-accent-border)' },
+                    Processing: { bg: 'rgba(251,191,36,0.1)',  color: '#fbbf24',              border: 'rgba(251,191,36,0.3)' },
+                    Draft:      { bg: 'var(--d-glass-bg)',     color: 'var(--d-text-muted)',  border: 'var(--d-border)' },
+                  }
+                  const sc = statusColors[ep.status]
+                  return (
+                    <div key={ep.title} style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr 1fr 1fr', padding: '13px 20px', borderBottom: i < arr.length - 1 ? '1px solid var(--d-border-light)' : 'none', alignItems: 'center' }}>
+                      <span style={{ fontSize: '13px', color: 'var(--d-text)', fontWeight: 500 }}>{ep.title}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>{ep.date}</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '100px', background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, fontSize: '11px', fontWeight: 600, width: 'fit-content' }}>
+                        <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: sc.color, flexShrink: 0, animation: ep.status === 'Processing' ? 'pulse-subtle 1.2s ease-in-out infinite' : undefined }} />
+                        {ep.status}
+                      </span>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button onClick={() => setActiveNav('Transcription')} style={{ fontSize: '11px', fontWeight: 600, padding: '5px 12px', background: 'var(--d-glass-bg)', border: '1px solid var(--d-border)', color: 'var(--d-text-secondary)', borderRadius: '7px', cursor: 'pointer', fontFamily: f, transition: 'all 0.15s ease' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--d-accent-border)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--d-accent)' }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--d-border)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--d-text-secondary)' }}>
+                          Open
+                        </button>
+                        <button onClick={() => setActiveNav('Reels')} style={{ fontSize: '11px', fontWeight: 600, padding: '5px 12px', background: 'var(--d-glass-bg)', border: '1px solid var(--d-border)', color: 'var(--d-text-secondary)', borderRadius: '7px', cursor: 'pointer', fontFamily: f, transition: 'all 0.15s ease' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--d-accent-border)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--d-accent)' }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--d-border)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--d-text-secondary)' }}>
+                          Outputs
+                        </button>
+                      </div>
                     </div>
+                  )
+                })}
+              </div>
+
+              {/* ── ROW 3: Quick Actions ── */}
+              <div style={{ marginBottom: '10px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--d-text-muted)', letterSpacing: '0.04em', display: 'block', marginBottom: '14px' }}>QUICK ACTIONS</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+                  {[
+                    { icon: '⬆️', label: 'New Episode',           sub: 'Upload URL or file',           tab: 'Transcription' },
+                    { icon: '✂️', label: 'Cut Clips',             sub: 'Find best moments',            tab: 'Reels' },
+                    { icon: '✍️', label: 'Generate Content Pack', sub: '10 formats, your voice',      tab: 'Content Pack' },
+                    { icon: '🔍', label: 'Research Guest',        sub: 'LinkedIn · press · Twitter',   tab: 'Editorial' },
+                  ].map(action => (
+                    <button
+                      key={action.label}
+                      onClick={() => setActiveNav(action.tab)}
+                      className="glass-card"
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                        padding: '20px', cursor: 'pointer', border: '1px solid var(--d-glass-border)',
+                        background: 'var(--d-glass-bg)', textAlign: 'left', fontFamily: f,
+                        transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+                        borderRadius: '14px',
+                      }}
+                      onMouseEnter={e => {
+                        const el = e.currentTarget as HTMLButtonElement
+                        el.style.transform = 'translateY(-3px)'
+                        el.style.boxShadow = '0 8px 28px rgba(16,185,129,0.12)'
+                        el.style.borderColor = 'var(--d-accent-border)'
+                      }}
+                      onMouseLeave={e => {
+                        const el = e.currentTarget as HTMLButtonElement
+                        el.style.transform = 'translateY(0)'
+                        el.style.boxShadow = ''
+                        el.style.borderColor = 'var(--d-glass-border)'
+                      }}
+                    >
+                      <span style={{ fontSize: '22px', marginBottom: '12px' }}>{action.icon}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--d-text)', letterSpacing: '-0.01em', display: 'block', marginBottom: '4px' }}>{action.label}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--d-text-muted)', lineHeight: 1.4 }}>{action.sub}</span>
+                    </button>
                   ))}
                 </div>
               </div>
+
             </div>
           )}
 
