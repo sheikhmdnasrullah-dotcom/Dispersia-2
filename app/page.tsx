@@ -153,54 +153,6 @@ export default function HomePage() {
         <TerminalMockup />
       </section>
 
-      {/* ── TRUST MARQUEE ── */}
-      <div style={{
-        borderTop: '1px solid var(--d-border)',
-        borderBottom: '1px solid var(--d-border)',
-        overflow: 'hidden',
-        position: 'relative',
-        padding: '14px 0',
-        /* fade edges */
-        maskImage: 'linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
-      }}>
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          width: 'max-content',
-          animation: 'marquee-scroll 32s linear infinite',
-        }}>
-          {/* Render twice so the loop is seamless */}
-          {[...Array(2)].map((_, pass) =>
-            ['500+ episodes processed', 'Used by creators in 40 countries', 'Average 4.2 hours saved per episode', '94% creator voice accuracy', 'Clips exported this week: 12,400', '500+ episodes processed', 'Used by creators in 40 countries', 'Average 4.2 hours saved per episode', '94% creator voice accuracy', 'Clips exported this week: 12,400'].map((text, i) => (
-              <span key={`${pass}-${i}`} style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '5px 14px',
-                borderRadius: '100px',
-                background: 'var(--d-glass-bg)',
-                border: '1px solid var(--d-border)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                fontSize: '11px',
-                fontFamily: "'IBM Plex Mono', 'Fira Code', monospace",
-                fontWeight: 500,
-                color: 'var(--d-text-muted)',
-                whiteSpace: 'nowrap',
-                letterSpacing: '0.01em',
-              }}>
-                <span style={{
-                  width: '5px', height: '5px', borderRadius: '50%',
-                  background: 'var(--d-accent)', opacity: 0.7, flexShrink: 0,
-                }} />
-                {text}
-              </span>
-            ))
-          )}
-        </div>
-      </div>
-
       {/* ── TOOLS (Bento Grid) ── */}
       <section id="tools" style={{ maxWidth: '1000px', margin: '0 auto', padding: '100px 24px' }}>
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
