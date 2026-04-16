@@ -48,9 +48,9 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ═══════════════════════════════════
+/* ===================================
    DYSPERSIA THEME SYSTEM
-   ═══════════════════════════════════ */
+   =================================== */
 
 /* LIGHT MODE */
 :root, [data-theme="light"] {
@@ -181,7 +181,7 @@
   --sidebar-ring: #34d399;
 }
 
-/* ═══ ANIMATIONS ═══ */
+/* === ANIMATIONS === */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -254,7 +254,7 @@
 
 
 
-/* ═══ GLOBAL STYLES ═══ */
+/* === GLOBAL STYLES === */
 * {
   box-sizing: border-box;
 }
@@ -273,7 +273,7 @@ body {
   line-height: 1.6;
 }
 
-/* ═══ CREATIVE COMPONENTS ═══ */
+/* === CREATIVE COMPONENTS === */
 
 /* Glassmorphism card */
 .glass-card {
@@ -433,11 +433,11 @@ body {
   }
 }
 
-/* ═══════════════════════════════════════════
-   DYSPERSIA NAVBAR SYSTEM — single floating pill
-   ═══════════════════════════════════════════════ */
+/* ===========================================
+   DYSPERSIA NAVBAR SYSTEM - single floating pill
+   =============================================== */
 
-/* ══ Outer header wrapper — centres the pill ══ */
+/* == Outer header wrapper - centres the pill == */
 .dys-header {
   position: fixed;
   top: 1.25rem;
@@ -448,7 +448,7 @@ body {
   max-width: 860px;
 }
 
-/* ══ The pill itself ══ */
+/* == The pill itself == */
 .dys-nav {
   display: flex;
   align-items: center;
@@ -465,7 +465,7 @@ body {
   position: relative;
 }
 
-/* ══ Logo ══ */
+/* == Logo == */
 .dys-nav__logo {
   flex-shrink: 0;
   font-size: 14px;
@@ -478,7 +478,7 @@ body {
 }
 .dys-nav__logo:hover { opacity: 0.75; }
 
-/* ══ Centre menu (desktop) ══ */
+/* == Centre menu (desktop) == */
 .dys-nav__menu {
   flex: 1;
   display: flex;
@@ -531,7 +531,7 @@ body {
 .dys-nav__link:hover span:nth-child(1) { transform: translateY(-150%); }
 .dys-nav__link:hover span:nth-child(2) { transform: translateY(0); }
 
-/* ══ Vertical divider ══ */
+/* == Vertical divider == */
 .dys-nav__divider {
   flex-shrink: 0;
   width: 1px;
@@ -540,7 +540,7 @@ body {
   margin: 0 10px;
 }
 
-/* ══ Right-side actions ══ */
+/* == Right-side actions == */
 .dys-nav__actions {
   flex-shrink: 0;
   display: flex;
@@ -604,7 +604,7 @@ body {
   box-shadow: 0 4px 24px rgba(16,185,129,0.5);
 }
 
-/* ══ Hamburger toggle — hidden on desktop ══ */
+/* == Hamburger toggle - hidden on desktop == */
 .dys-nav__toggle {
   display: none;
   flex-direction: column;
@@ -638,7 +638,7 @@ body {
 .dys-nav__toggle--active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .dys-nav__toggle--active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ══ Mobile dropdown ══ */
+/* == Mobile dropdown == */
 .dys-nav__dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -678,7 +678,7 @@ body {
   z-index: 199;
 }
 
-/* ══ MOBILE ≤ 768px ══ */
+/* == MOBILE  768px == */
 @media screen and (max-width: 768px) {
   .dys-header {
     width: calc(100% - 32px);
@@ -689,7 +689,7 @@ body {
   .dys-nav__divider { display: none; }
   .dys-nav__toggle { display: flex; }
 
-  /* Hide Log in ghost button on mobile — only keep Get Started */
+  /* Hide Log in ghost button on mobile - only keep Get Started */
   .dys-action-btn--ghost { display: none; }
 
   /* Tighten the pill on mobile */
@@ -700,23 +700,23 @@ body {
   }
 }
 
-/* ══ Large screens ══ */
+/* == Large screens == */
 @media screen and (min-width: 1100px) {
   .dys-nav { height: 54px; padding: 7px 7px 7px 22px; }
   .dys-nav__link { font-size: 14px; padding: 0 18px; }
 }
 
 
-/* ═══════════════════════════════════════════
-   MOBILE RESPONSIVE — marketing page
+/* ===========================================
+   MOBILE RESPONSIVE - marketing page
    max-width: 768px
-   ═══════════════════════════════════════════ */
+   =========================================== */
 @media screen and (max-width: 768px) {
 
-  /* ── Global page padding ── */
+  /*  Global page padding  */
   section { padding-left: 16px !important; padding-right: 16px !important; }
 
-  /* ── Hero ── */
+  /*  Hero  */
   /* Hero padding: account for the pill navbar height */
   section:first-of-type {
     padding-top: 110px !important;
@@ -735,7 +735,7 @@ body {
     text-align: center;
   }
 
-  /* ── Bento grid: single column on mobile ── */
+  /*  Bento grid: single column on mobile  */
   .bento-grid {
     grid-template-columns: 1fr !important;
   }
@@ -744,12 +744,12 @@ body {
     grid-column: span 1 !important;
   }
 
-  /* ── How it works: single column ── */
+  /*  How it works: single column  */
   .hiw-grid {
     grid-template-columns: 1fr !important;
   }
 
-  /* ── Demo input: stack vertically ── */
+  /*  Demo input: stack vertically  */
   .demo-input-row {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -764,7 +764,7 @@ body {
     padding: 12px !important;
   }
 
-  /* ── Pipeline steps: scrollable row ── */
+  /*  Pipeline steps: scrollable row  */
   .pipeline-steps {
     justify-content: flex-start !important;
     overflow-x: auto !important;
@@ -780,7 +780,7 @@ body {
     padding: 12px 10px !important;
   }
 
-  /* ── Creator Brain: full-width stacked ── */
+  /*  Creator Brain: full-width stacked  */
   .brain-section {
     flex-direction: column !important;
     gap: 24px !important;
@@ -790,26 +790,26 @@ body {
     width: 100% !important;
   }
 
-  /* ── What you replace: single column ── */
+  /*  What you replace: single column  */
   .replace-grid {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
   }
 
-  /* ── Pricing: single column ── */
+  /*  Pricing: single column  */
   .pricing-grid {
     grid-template-columns: 1fr !im  .blob-3 { width: 160px !important; height: 160px !important; }
 }
 
-/* ── Extra small (375px phones) ── */
+/*  Extra small (375px phones)  */
 @media screen and (max-width: 400px) {
   .footer-grid    { grid-template-columns: 1fr !important; }
   .hero-cta-row a { max-width: 100%; }
 }
 
-/* ═══════════════════════════════════════════
+/* ===========================================
    TICKER STRIP
-   ═══════════════════════════════════════════ */
+   =========================================== */
 @keyframes ticker {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -823,9 +823,9 @@ body {
   animation-play-state: paused;
 }
 
-/* ═══════════════════════════════════════════
-   TOOLS SECTION — desktop / mobile switching
-   ═══════════════════════════════════════════ */
+/* ===========================================
+   TOOLS SECTION - desktop / mobile switching
+   =========================================== */
 .tools-section-wrapper { display: block; }
 .tools-mobile-section  { display: none;  }
 
