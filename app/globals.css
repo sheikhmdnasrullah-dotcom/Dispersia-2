@@ -829,61 +829,36 @@ body {
 /* ===========================================
    TOOLS SECTION - desktop / mobile switching
    =========================================== */
+
+/* -- Desktop: show sticky stack, hide static list -- */
 .tools-section-wrapper { display: block; }
 .tools-mobile-section  { display: none;  }
 
+/* Smooth scroll on the html element helps sticky feel silky */
+html { scroll-behavior: smooth; }
+
+/* GPU promotion for sticky cards */
+.tool-card-inner {
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Card surface hover glow uses CSS transition */
+.tool-card-surface {
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Feature row slide on hover - handled inline but reset here */
+.tool-feature-row {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
+}
+
+/* -- Mobile: hide sticky section, show static list -- */
 @media screen and (max-width: 768px) {
   .tools-section-wrapper { display: none !important; }
   .tools-mobile-section  {
     display: block !important;
-    padding: 72px 16px 56px;
-  }
-}
-
-/* GPU compositing hints */
-.tools-sticky-vp {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-.tool-card-slot {
-  will-change: transform, opacity;
-}
-
-/* ===================================================
-   TOOLS STICKY STACK -- mobile responsive
-   =================================================== */
-@media screen and (max-width: 768px) {
-  /* Cards: stack left/right into single column */
-  .tool-card-inner {
-    flex-direction: column !important;
-    padding: 28px 20px !important;
-    gap: 20px !important;
-  }
-
-  /* Left text: take full width */
-  .tool-card-inner > div:first-child {
-    flex: none !important;
-    width: 100% !important;
-  }
-
-  /* Right tags: take full width, align left */
-  .tool-card-inner > div:last-child {
-    flex: none !important;
-    width: 100% !important;
-    align-items: flex-start !important;
-  }
-
-  .tool-card-inner > div:last-child > div {
-    justify-content: flex-start !important;
-  }
-
-  /* Reduce sticky offset on mobile so cards don't collide with navbar */
-  .tool-card-outer {
-    top: 56px !important;
-  }
-
-  /* Section padding tighter on mobile */
-  #tools {
-    padding: 80px 16px 40vh !important;
+    padding: 64px 16px 48px;
   }
 }
