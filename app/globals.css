@@ -798,50 +798,13 @@ body {
 
   /* ── Pricing: single column ── */
   .pricing-grid {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-
-  /* ── Footer: 2 columns → 1 column ── */
-  .footer-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 24px !important;
-  }
-
-  /* ── Section headings — reduce on very small screens ── */
-  h2 {
-    font-size: clamp(26px, 7vw, 36px) !important;
-  }
-
-  /* ── Reduce section vertical spacing ── */
-  section {
-    padding-top: 64px !important;
-    padding-bottom: 64px !important;
-  }
-
-  /* ── Glass card padding reduce ── */
-  .glass-card { border-radius: 10px; }
-
-  /* ── Blobs: shrink to avoid overflow ── */
-  .blob-1 { width: 200px !important; height: 200px !important; }
-  .blob-2 { width: 180px !important; height: 180px !important; }
-  .blob-3 { width: 160px !important; height: 160px !important; }
-
-  /* ── FAQ accordion ── */
-  /* Already responsive via maxWidth + padding, just tighten padding */
-  section > div[style*="760px"] {
-    padding: 64px 0 !important;
-  }
+    grid-template-columns: 1fr !im  .blob-3 { width: 160px !important; height: 160px !important; }
 }
 
 /* ── Extra small (375px phones) ── */
 @media screen and (max-width: 400px) {
-  .footer-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .hero-cta-row a {
-    max-width: 100%;
-  }
+  .footer-grid    { grid-template-columns: 1fr !important; }
+  .hero-cta-row a { max-width: 100%; }
 }
 
 /* ═══════════════════════════════════════════
@@ -851,18 +814,38 @@ body {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-
 .ticker-track {
   display: flex;
   width: max-content;
   animation: ticker 22s linear infinite;
 }
-
 .ticker-track:hover {
   animation-play-state: paused;
 }
 
 /* ═══════════════════════════════════════════
+   TOOLS SECTION — desktop / mobile switching
+   ═══════════════════════════════════════════ */
+.tools-section-wrapper { display: block; }
+.tools-mobile-section  { display: none;  }
+
+@media screen and (max-width: 768px) {
+  .tools-section-wrapper { display: none !important; }
+  .tools-mobile-section  {
+    display: block !important;
+    padding: 72px 16px 56px;
+  }
+}
+
+/* GPU compositing hints */
+.tools-sticky-vp {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.tool-card-slot {
+  will-change: transform, opacity;
+}
+��═════
    TOOLS STICKY STACK — mobile responsive
    ═══════════════════════════════════════════ */
 @media screen and (max-width: 768px) {

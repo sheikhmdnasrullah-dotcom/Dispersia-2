@@ -84,7 +84,7 @@ export default function HomePage() {
   const isAnnual = billingCycle === 'annual'
 
   return (
-    <div style={{ minHeight: '100vh', fontFamily: f, overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', fontFamily: f, overflowX: 'hidden' }}>
       {/* ── NAV ── */}
       <Navbar />
 
