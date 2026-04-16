@@ -84,7 +84,7 @@ export default function HomePage() {
   const isAnnual = billingCycle === 'annual'
 
   return (
-    <div style={{ minHeight: '100vh', fontFamily: f, overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', fontFamily: f, overflow: 'clip' }}>
       {/* ── NAV ── */}
       <Navbar />
 
@@ -175,7 +175,7 @@ export default function HomePage() {
           <span style={{
             fontFamily: "'IBM Plex Mono', monospace",
             fontSize: '11px',
-            color: 'rgba(255,255,255,0.25)',
+            color: 'var(--d-text-muted)',
             letterSpacing: '0.12em',
             whiteSpace: 'nowrap',
             paddingRight: '0',
@@ -186,7 +186,7 @@ export default function HomePage() {
       </div>
 
       {/* ── TOOLS — sticky stack ── */}
-      <ToolsSection />
+      <ToolsSection tools={TOOLS} />
 
       {/* ── HOW IT WORKS ── */}
       <section id="how-it-works" style={{ padding: '100px 24px', position: 'relative' }}>
