@@ -21,7 +21,7 @@ export default function Navbar() {
 
           {/* ── Left: Logo ── */}
           <Link href="/" className="dys-nav__logo" aria-label="Home">
-            dyspersia
+            DYSPERSIA
           </Link>
 
           {/* ── Centre: Nav links (desktop only) ── */}

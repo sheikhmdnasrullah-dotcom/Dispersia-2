@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import TerminalMockup from '@/components/TerminalMockup'
 import CreatorBrainFeed from '@/components/CreatorBrainFeed'
 import FaqAccordion from '@/components/FaqAccordion'
+import ToolsSection from '@/components/ToolsSection'
 
 const TOOLS = [
   {
@@ -79,7 +80,6 @@ const PRICING = [
 
 export default function HomePage() {
   const f = "'Inter', sans-serif"
-  const [hoveredTool, setHoveredTool] = useState<string | null>(null)
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
   const isAnnual = billingCycle === 'annual'
 
@@ -111,136 +111,82 @@ export default function HomePage() {
 
         <div style={{ position: 'relative', zIndex: 1 }}>
 
+          {/* Radial glow behind headline */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0,
+            width: '100%', height: '100%',
+            pointerEvents: 'none', zIndex: 0,
+            background: 'radial-gradient(ellipse 65% 45% at 50% 55%, rgba(0,255,128,0.06) 0%, transparent 68%)',
+          }} />
+
           {/* Headline */}
-          <h1 style={{
-            fontSize: 'clamp(44px, 7vw, 80px)', fontWeight: 800, lineHeight: 1.05,
-            marginBottom: '24px', letterSpacing: '-0.04em',
-          }}>
-            <span style={{ color: 'var(--d-text)' }}>The AI brain for</span>
-            <br />
-            <span className="gradient-text">podcast creators.</span>
-          </h1>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <h1 style={{
+              fontSize: 'clamp(44px, 7vw, 80px)', fontWeight: 800, lineHeight: 1.05,
+              marginBottom: '24px', letterSpacing: '-0.04em',
+            }}>
+              <span style={{ color: 'var(--d-text)' }}>The AI brain for</span>
+              <br />
+              <span className="gradient-text">podcast creators.</span>
+            </h1>
 
-          {/* Subhead */}
-          <p style={{
-            fontSize: '17px', color: 'var(--d-text-secondary)', lineHeight: 1.7,
-            maxWidth: '500px', margin: '0 auto 36px', fontWeight: 400,
-          }}>
-            Upload one episode. Get clips, captions, show notes, titles, newsletters,
-            thumbnails and more — all written in your exact voice.
-          </p>
+            {/* Subhead */}
+            <p style={{
+              fontSize: '17px', color: 'var(--d-text-secondary)', lineHeight: 1.7,
+              maxWidth: '500px', margin: '0 auto 36px', fontWeight: 400,
+            }}>
+              Upload one episode. Get clips, captions, show notes, titles, newsletters,
+              thumbnails and more — all written in your exact voice.
+            </p>
 
-          {/* CTA */}
-          <div className="hero-cta-row" style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '16px' }}>
-            <Link href="/signup" style={{
-              padding: '14px 32px', background: 'var(--d-accent)', color: '#fff',
-              textDecoration: 'none', fontSize: '15px', fontWeight: 600, borderRadius: '10px',
-              transition: 'all 0.2s ease', boxShadow: '0 4px 24px rgba(16,185,129,0.25)',
-            }}>Start for free →</Link>
-            <Link href="/login" style={{
-              padding: '14px 32px', background: 'var(--d-glass-bg)', backdropFilter: 'blur(12px)',
-              border: '1px solid var(--d-border)', color: 'var(--d-text-secondary)',
-              textDecoration: 'none', fontSize: '15px', fontWeight: 500, borderRadius: '10px',
-              transition: 'all 0.2s ease',
-            }}>Log in</Link>
+            {/* CTA */}
+            <div className="hero-cta-row" style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '16px' }}>
+              <Link href="/signup" style={{
+                padding: '14px 32px', background: 'var(--d-accent)', color: '#fff',
+                textDecoration: 'none', fontSize: '15px', fontWeight: 600, borderRadius: '10px',
+                transition: 'all 0.2s ease', boxShadow: '0 4px 24px rgba(16,185,129,0.25)',
+              }}>Start for free →</Link>
+              <Link href="/login" style={{
+                padding: '14px 32px', background: 'var(--d-glass-bg)', backdropFilter: 'blur(12px)',
+                border: '1px solid var(--d-border)', color: 'var(--d-text-secondary)',
+                textDecoration: 'none', fontSize: '15px', fontWeight: 500, borderRadius: '10px',
+                transition: 'all 0.2s ease',
+              }}>Log in</Link>
+            </div>
+            <p style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>
+              No credit card · First episode free · Cancel anytime
+            </p>
           </div>
-          <p style={{ fontSize: '12px', color: 'var(--d-text-muted)' }}>
-            No credit card · First episode free · Cancel anytime
-          </p>
         </div>
 
         {/* Animated terminal mockup */}
         <TerminalMockup />
       </section>
 
-      {/* ── TOOLS (Bento Grid) ── */}
-      <section id="tools" style={{ maxWidth: '1000px', margin: '0 auto', padding: '100px 24px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>
-            <span className="gradient-text">TOOLS</span>
+      {/* ── TICKER STRIP ── */}
+      <div style={{
+        overflow: 'hidden',
+        borderTop: '1px solid rgba(0,255,128,0.07)',
+        borderBottom: '1px solid rgba(0,255,128,0.07)',
+        background: 'rgba(0,255,128,0.025)',
+        padding: '10px 0',
+      }}>
+        <div className="ticker-track">
+          <span style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.25)',
+            letterSpacing: '0.12em',
+            whiteSpace: 'nowrap',
+            paddingRight: '0',
+          }}>
+            TRANSCRIPTION&nbsp;&nbsp;·&nbsp;&nbsp;CLIP FINDER&nbsp;&nbsp;·&nbsp;&nbsp;CAPTIONS&nbsp;&nbsp;·&nbsp;&nbsp;CONTENT PACK&nbsp;&nbsp;·&nbsp;&nbsp;EDITORIAL DIRECTION&nbsp;&nbsp;·&nbsp;&nbsp;DISTRIBUTION&nbsp;&nbsp;·&nbsp;&nbsp;DYSPERSIA AGENT&nbsp;&nbsp;·&nbsp;&nbsp;TRANSCRIPTION&nbsp;&nbsp;·&nbsp;&nbsp;CLIP FINDER&nbsp;&nbsp;·&nbsp;&nbsp;CAPTIONS&nbsp;&nbsp;·&nbsp;&nbsp;CONTENT PACK&nbsp;&nbsp;·&nbsp;&nbsp;EDITORIAL DIRECTION&nbsp;&nbsp;·&nbsp;&nbsp;DISTRIBUTION&nbsp;&nbsp;·&nbsp;&nbsp;DYSPERSIA AGENT&nbsp;&nbsp;·&nbsp;&nbsp;
           </span>
-          <h2 style={{ fontSize: '36px', fontWeight: 800, marginTop: '8px', letterSpacing: '-0.03em', color: 'var(--d-text)' }}>
-            Everything you need. Nothing you don&apos;t.
-          </h2>
         </div>
+      </div>
 
-        <div className="bento-grid">
-          {TOOLS.map((tool, i) => {
-            const isHovered = hoveredTool === tool.num
-            return (
-              <div
-                key={tool.num}
-                className="glass-card"
-                onMouseEnter={() => setHoveredTool(tool.num)}
-                onMouseLeave={() => setHoveredTool(null)}
-                style={{
-                  padding: '28px',
-                  cursor: 'default',
-                  gridColumn: tool.size === 'wide' ? 'span 2' : 'span 1',
-                  animation: `fade-in 0.4s ease ${i * 0.06}s both`,
-                  transform: isHovered ? 'scale(1.025) translateY(-3px)' : 'scale(1) translateY(0)',
-                  transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease',
-                  boxShadow: isHovered ? '0 12px 40px rgba(16,185,129,0.12)' : undefined,
-                  zIndex: isHovered ? 2 : 1,
-                  position: 'relative',
-                }}
-              >
-                {/* Existing header row */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                  <span style={{ fontSize: '24px' }}>{tool.icon}</span>
-                  <div>
-                    <span style={{ fontSize: '10px', color: 'var(--d-text-muted)', fontWeight: 500 }}>{tool.num}</span>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--d-text)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>{tool.name}</h3>
-                  </div>
-                </div>
-
-                {/* Existing description */}
-                <p style={{ fontSize: '14px', color: 'var(--d-text-secondary)', lineHeight: 1.6 }}>{tool.desc}</p>
-
-                {/* ── Reveal layer ── */}
-                <div style={{
-                  overflow: 'hidden',
-                  maxHeight: isHovered ? '160px' : '0px',
-                  opacity: isHovered ? 1 : 0,
-                  transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
-                }}>
-                  <div style={{
-                    marginTop: '16px',
-                    paddingTop: '14px',
-                    borderTop: '1px solid var(--d-border)',
-                  }}>
-                    {/* Bullet points */}
-                    <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                      {tool.bullets.map((b) => (
-                        <li key={b} style={{ display: 'flex', alignItems: 'center', gap: '9px', fontSize: '13px', color: 'var(--d-text-secondary)', lineHeight: 1.5 }}>
-                          <span style={{
-                            width: '5px', height: '5px', borderRadius: '50%',
-                            background: 'var(--d-accent)', flexShrink: 0, opacity: 0.85,
-                          }} />
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Tool number pill */}
-                    <div style={{ marginTop: '14px' }}>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                        padding: '3px 10px', borderRadius: '100px',
-                        background: 'var(--d-accent-light)', border: '1px solid var(--d-accent-border)',
-                        fontSize: '11px', fontWeight: 600, color: 'var(--d-accent)',
-                        fontFamily: "'IBM Plex Mono', monospace",
-                      }}>
-                        tool {tool.num}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
+      {/* ── TOOLS — sticky stack ── */}
+      <ToolsSection />
 
       {/* ── HOW IT WORKS ── */}
       <section id="how-it-works" style={{ padding: '100px 24px', position: 'relative' }}>
@@ -769,7 +715,7 @@ export default function HomePage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
               <div className="status-dot" />
-              <span style={{ fontWeight: 700 }}><span className="gradient-text">dyspersia</span></span>
+              <span style={{ fontWeight: 700, letterSpacing: '-0.02em' }}><span className="gradient-text">DYSPERSIA</span></span>
             </div>
             <p style={{ fontSize: '13px', color: 'var(--d-text-muted)', lineHeight: 1.5 }}>The AI brain for podcast creators.</p>
             <p style={{ fontSize: '11px', color: 'var(--d-text-muted)', marginTop: '8px' }}>© 2026 Dyspersia / Slidein Venture</p>

@@ -843,3 +843,60 @@ body {
     max-width: 100%;
   }
 }
+
+/* ═══════════════════════════════════════════
+   TICKER STRIP
+   ═══════════════════════════════════════════ */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 22s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+/* ═══════════════════════════════════════════
+   TOOLS STICKY STACK — mobile responsive
+   ═══════════════════════════════════════════ */
+@media screen and (max-width: 768px) {
+  /* Cards: stack left/right into single column */
+  .tool-card-inner {
+    flex-direction: column !important;
+    padding: 28px 20px !important;
+    gap: 20px !important;
+  }
+
+  /* Left text: take full width */
+  .tool-card-inner > div:first-child {
+    flex: none !important;
+    width: 100% !important;
+  }
+
+  /* Right tags: take full width, align left */
+  .tool-card-inner > div:last-child {
+    flex: none !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+  }
+
+  .tool-card-inner > div:last-child > div {
+    justify-content: flex-start !important;
+  }
+
+  /* Reduce sticky offset on mobile so cards don't collide with navbar */
+  .tool-card-outer {
+    top: 56px !important;
+  }
+
+  /* Section padding tighter on mobile */
+  #tools {
+    padding: 80px 16px 40vh !important;
+  }
+}
