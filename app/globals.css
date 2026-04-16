@@ -798,7 +798,10 @@ body {
 
   /*  Pricing: single column  */
   .pricing-grid {
-    grid-template-columns: 1fr !im  .blob-3 { width: 160px !important; height: 160px !important; }
+    grid-template-columns: 1fr !important;
+  }
+
+  .blob-1, .blob-2, .blob-3 { width: 160px !important; height: 160px !important; }
 }
 
 /*  Extra small (375px phones)  */
@@ -849,7 +852,7 @@ body {
 /* ===================================================
    TOOLS STICKY STACK -- mobile responsive
    =================================================== */
-@media@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) {
   /* Cards: stack left/right into single column */
   .tool-card-inner {
     flex-direction: column !important;
