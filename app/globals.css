@@ -845,10 +845,11 @@ body {
 .tool-card-slot {
   will-change: transform, opacity;
 }
-��═════
-   TOOLS STICKY STACK — mobile responsive
-   ═══════════════════════════════════════════ */
-@media screen and (max-width: 768px) {
+
+/* ===================================================
+   TOOLS STICKY STACK -- mobile responsive
+   =================================================== */
+@media@media screen and (max-width: 768px) {
   /* Cards: stack left/right into single column */
   .tool-card-inner {
     flex-direction: column !important;
