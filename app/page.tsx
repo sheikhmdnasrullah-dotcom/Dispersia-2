@@ -7,6 +7,7 @@ import TerminalMockup from '@/components/TerminalMockup'
 import CreatorBrainFeed from '@/components/CreatorBrainFeed'
 import FaqAccordion from '@/components/FaqAccordion'
 import ToolsSection from '@/components/ToolsSection'
+import AgentSection from '@/components/AgentSection'
 
 const TOOLS = [
   {
@@ -33,10 +34,7 @@ const TOOLS = [
     num: '06', name: 'Distribution', desc: 'Schedule across YouTube, Spotify, LinkedIn, TikTok with unified analytics', icon: '📡', size: 'normal',
     bullets: ['YouTube + Spotify + LinkedIn + Twitter', 'Unified analytics dashboard', 'Performance feedback loop'],
   },
-  {
-    num: '07', name: 'Dyspersia Agent', desc: 'Your 24/7 AI producer — message it from Telegram, Discord, or WhatsApp', icon: '🤖', size: 'wide',
-    bullets: ['Discord + Telegram + WhatsApp', '24/7 background worker', 'Task queue with auto-execution'],
-  },
+
 ]
 
 const PRICING = [
@@ -187,6 +185,9 @@ export default function HomePage() {
 
       {/* ── TOOLS — sticky stack ── */}
       <ToolsSection tools={TOOLS} />
+
+      {/* ── DYSPERSIA AGENT — dedicated futuristic section ── */}
+      <AgentSection />
 
       {/* ── HOW IT WORKS ── */}
       <section id="how-it-works" style={{ padding: '100px 24px', position: 'relative' }}>
