@@ -161,27 +161,6 @@ export default function HomePage() {
         <TerminalMockup />
       </section>
 
-      {/* ── TICKER STRIP ── */}
-      <div style={{
-        overflow: 'hidden',
-        borderTop: '1px solid rgba(0,255,128,0.07)',
-        borderBottom: '1px solid rgba(0,255,128,0.07)',
-        background: 'rgba(0,255,128,0.025)',
-        padding: '10px 0',
-      }}>
-        <div className="ticker-track">
-          <span style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: '11px',
-            color: 'var(--d-text-muted)',
-            letterSpacing: '0.12em',
-            whiteSpace: 'nowrap',
-            paddingRight: '0',
-          }}>
-            TRANSCRIPTION&nbsp;&nbsp;·&nbsp;&nbsp;CLIP FINDER&nbsp;&nbsp;·&nbsp;&nbsp;CAPTIONS&nbsp;&nbsp;·&nbsp;&nbsp;CONTENT PACK&nbsp;&nbsp;·&nbsp;&nbsp;EDITORIAL DIRECTION&nbsp;&nbsp;·&nbsp;&nbsp;DISTRIBUTION&nbsp;&nbsp;·&nbsp;&nbsp;DYSPERSIA AGENT&nbsp;&nbsp;·&nbsp;&nbsp;TRANSCRIPTION&nbsp;&nbsp;·&nbsp;&nbsp;CLIP FINDER&nbsp;&nbsp;·&nbsp;&nbsp;CAPTIONS&nbsp;&nbsp;·&nbsp;&nbsp;CONTENT PACK&nbsp;&nbsp;·&nbsp;&nbsp;EDITORIAL DIRECTION&nbsp;&nbsp;·&nbsp;&nbsp;DISTRIBUTION&nbsp;&nbsp;·&nbsp;&nbsp;DYSPERSIA AGENT&nbsp;&nbsp;·&nbsp;&nbsp;
-          </span>
-        </div>
-      </div>
 
       {/* ── TOOLS — sticky stack ── */}
       <ToolsSection tools={TOOLS} />

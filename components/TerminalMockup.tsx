@@ -93,7 +93,7 @@ export default function TerminalMockup() {
             marginLeft: '12px', fontSize: '11px',
             color: 'var(--d-text-muted)', fontWeight: 500,
           }}>
-            dyspersia agent — active
+            dyspersia — processing pipeline
           </span>
         </div>
 

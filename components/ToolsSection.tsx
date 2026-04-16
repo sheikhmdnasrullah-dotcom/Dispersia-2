@@ -60,10 +60,10 @@ export default function ToolsSection({ tools = DEFAULT_TOOLS }: ToolsSectionProp
           The wrapper sticks at its top offset and only releases once the scroll has
           consumed its margin — by which point the next card is already on top.
         */}
-        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 24px 80px' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 24px 0' }}>
           {tools.map((tool, i) => {
-            const isLast = i === N - 1
-            // Each card stacks 3vh lower so you can see the deck building up
+            // Every card — including the last — gets 100vh of scroll travel.
+            // This is what makes tool 6 sticky instead of static.
             const stickyTop = 10 + i * 3
 
             return (
@@ -72,11 +72,8 @@ export default function ToolsSection({ tools = DEFAULT_TOOLS }: ToolsSectionProp
                 style={{
                   position: 'sticky',
                   top: `${stickyTop}vh`,
-                  // NON-ZERO height — this is what was broken before. The wrapper
-                  // must occupy real space so the browser places it correctly.
                   height: 'clamp(400px, 72vh, 600px)',
-                  // 100vh of scroll travel per card (except the last)
-                  marginBottom: isLast ? '80px' : '100vh',
+                  marginBottom: '100vh',
                   zIndex: i + 10,
                 }}
               >
@@ -84,6 +81,8 @@ export default function ToolsSection({ tools = DEFAULT_TOOLS }: ToolsSectionProp
               </div>
             )
           })}
+          {/* End spacer: gives the last card time to be seen before the section exits */}
+          <div style={{ height: '20vh' }} />
         </div>
       </section>
 
